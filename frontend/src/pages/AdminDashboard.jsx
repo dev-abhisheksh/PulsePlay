@@ -8,7 +8,7 @@ import axios from 'axios';
 
 const AdminDashboard = () => {
   const [menuBarToggle, setMenuBarToggle] = useState(true)
-  const [activePage, setActivePage] = useState()
+  const [user, setUser] = useState(null)
   const [songs, setSongs] = useState([])
   const [addSongToggle, setAddSongToggle] = useState(false)
   const titleRef = useRef();
@@ -18,6 +18,15 @@ const AdminDashboard = () => {
   const audioRef = useRef();
   const [uploading, setUploading] = useState(false)
 
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const res = await axios.get("http://localhost:4000/api/all-users", { withCredentials: true })
+      setUser(res.data)
+      console.log(res.data)
+    }
+    fetchUsers()
+  }, [])
 
   const handleAddSongToggle = () => {
     setAddSongToggle(true)
@@ -153,8 +162,8 @@ const AdminDashboard = () => {
             <h1 className='text-3xl font-bold text-white'>{songs.length ? songs.length : (<p className='text-sm'>Loading</p>)}</h1>
           </div>
           <div className='flex items-center flex-col pt-3 gap-2 border  rounded-md h-22 w-25 bg-[#FD830D]'>
-            <p className='text-sm text-white font-semibold'>Total Songs</p>
-            <h1 className='text-3xl font-bold text-white'>153</h1>
+            <p className='text-sm text-white font-semibold'>Total Users</p>
+            <h1 className='text-3xl font-bold text-white'>{user? (user.length): (<p className='text-sm'>Loading</p>)}</h1>
           </div>
           <div className='flex items-center flex-col pt-3 gap-2 border  rounded-md h-22 w-25 bg-[#FD830D]'>
             <p className='text-sm text-white font-semibold'>Total Songs</p>

@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef } from 'react'
 import { FaArrowAltCircleLeft, FaPlay, FaArrowAltCircleRight, FaPause, FaAlignJustify, FaAlignRight, FaHome, FaSearch, FaMusic, FaDownload } from "react-icons/fa";
 import { MdPlaylistAddCheckCircle, MdPlaylistAddCircle, MdLoop, MdOutlineShuffle, MdAdminPanelSettings } from "react-icons/md";
 import { Link } from 'react-router-dom';
-
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 const Playbar = ({ songs, currentIndex, setCurrentIndex }) => {
@@ -12,6 +13,27 @@ const Playbar = ({ songs, currentIndex, setCurrentIndex }) => {
   const [currentTime, setCurrentTime] = useState(0)
   const [menuBarToggle, setMenuBarToggle] = useState(true)
   const [addToPlaylist, setAddToPlaylist] = useState(true)
+  const [user, setUser] = useState(null)
+  const navigate = useNavigate()
+
+
+  const handleLogout = async () => {
+    await axios.get("http://localhost:4000/api/logout", { withCredentials: true })
+    navigate("/login");
+  }
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get("http://localhost:4000/api/verify", { withCredentials: true })
+        setUser(res.data.user)
+        console.log(res.data.user)
+      } catch (error) {
+
+      }
+    }
+    fetchUser()
+  }, [])
 
   const audioRef = useRef(null)
 
@@ -110,7 +132,7 @@ const Playbar = ({ songs, currentIndex, setCurrentIndex }) => {
         {/* Navbar Panel */}
         <div
           className={`fixed top-0 left-0 h-full w-[75%] border-r-2 flex flex-col gap-10 border-white bg-black bg-opacity-40 transform transition-transform duration-500 ease-in-out z-40
-  ${menuBarToggle ? "-translate-x-full" : "translate-x-0"}`}
+    ${menuBarToggle ? "-translate-x-full" : "translate-x-0"}`}
         >
           <h2 className="pl-7 pt-5  text-white text-2xl font-bold">PulsePlay</h2>
           <div className='flex flex-col justify-between h-screen pb-10 px-3'>
@@ -133,16 +155,16 @@ const Playbar = ({ songs, currentIndex, setCurrentIndex }) => {
               </div>
               <div className='flex items-center gap-6'>
                 <MdAdminPanelSettings size={27} className='text-white' />
-               <Link to="admin">
-               Admin
-               </Link>
+                <Link to="admin">
+                  Admin
+                </Link>
 
               </div>
             </ul>
 
             <div className='px-3 flex justify-between items-center'>
-              <h1 className='text-white text-2xl'>User</h1>
-              <button className='text-white text-sm border border-[#FD830D] px-2 py-1 rounded-md'>LogOut</button>
+              <h1 className='text-white text-2xl'>{user ? (user.username) : "user"}</h1>
+              <button onClick={handleLogout} className='text-white text-sm border border-[#FD830D] px-2 py-1 rounded-md'>LogOut</button>
             </div>
           </div>
         </div>

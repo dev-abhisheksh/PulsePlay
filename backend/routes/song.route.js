@@ -11,7 +11,7 @@ router.post("/add", upload.fields([{ name: "audio", maxCount: 1 }, { name: "cove
 
 
 //Common user routes
-router.get("/songs", /*verifyUser,*/ getSongs)
+router.get("/songs", getSongs)
 router.get("/search", verifyUser, searchSongs)
 
 

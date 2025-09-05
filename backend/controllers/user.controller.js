@@ -58,6 +58,7 @@ const loginUser = async (req, res) => {
             return res.status(404).json({ message: "User not found" })
         }
 
+
         const isPasswordValid = await user.isPasswordCorrect(password)
         if (!isPasswordValid) {
             return res.status(401).json({ message: "Invalid password" })
@@ -69,18 +70,34 @@ const loginUser = async (req, res) => {
             httpOnly: true,
             secure: false
         }
-
         return res
             .status(200)
             .cookie("accessToken", accessToken, options)
             .cookie("refreshToken", refreshToken, options)
-            .json({ message: "User logged in successfully" })
+            .json({ message: "User logged in successfully", })
     } catch (error) {
         return res.status(500).json({ message: "Faild login" })
     }
 }
 
+const logoutUser = async (req, res) => {
+    res
+        .clearCookie("accessToken", { httpOnly: true, secure: false })
+        .clearCookie("refreshToken", { httpOnly: true, secure: false })
+        .status(200)
+        .json({ message: "User logged out successfully" });
+};
+
+const usersCount = async (req, res) => {
+    const users = await User.find()
+    res.json(users)
+}
+
+
+
 export {
     register,
-    loginUser
+    loginUser,
+    logoutUser,
+    usersCount
 }

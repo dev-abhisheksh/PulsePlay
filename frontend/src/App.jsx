@@ -5,11 +5,13 @@ import Navbar from "./components/Navbar";
 import MainBody from "./components/MainBody";
 import { Route, Routes } from "react-router-dom";
 import AdminDashboard from "./pages/AdminDashboard";
-import { RouterProvider,createBrowserRouter } from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./pages/Login";
 
 const router = createBrowserRouter([
-  {path:"admin", element:<AdminDashboard/>},
-  {path:"/home", element:<Playbar/>}
+  { path: "admin", element: <AdminDashboard /> },
+  { path: "/home", element: <Playbar /> }
 ])
 
 const App = () => {
@@ -31,11 +33,14 @@ const App = () => {
 
   return (
     <Routes>
+      <Route path="/login" element={<Login />} />
       <Route path="/" element={
         <div className="flex">
-          
           <div className="block sm:block" >
-            <Playbar songs={songs} currentIndex={currentIndex} setCurrentIndex={setCurrentIndex} />
+            <ProtectedRoute>
+
+              <Playbar songs={songs} currentIndex={currentIndex} setCurrentIndex={setCurrentIndex} />
+            </ProtectedRoute>
           </div>
         </div>
       } />
