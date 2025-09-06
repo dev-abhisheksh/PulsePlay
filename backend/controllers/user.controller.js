@@ -50,35 +50,41 @@ const loginUser = async (req, res) => {
         const { username, password } = req.body;
 
         if (!username || !password) {
-            return res.status(401).json({ message: "Both fields are required" })
+            return res.status(401).json({ message: "Both fields are required" });
         }
 
-        const user = await User.findOne({ username })
+        const user = await User.findOne({ username });
         if (!user) {
-            return res.status(404).json({ message: "User not found" })
+            return res.status(404).json({ message: "User not found" });
         }
 
-
-        const isPasswordValid = await user.isPasswordCorrect(password)
+        const isPasswordValid = await user.isPasswordCorrect(password);
         if (!isPasswordValid) {
-            return res.status(401).json({ message: "Invalid password" })
+            return res.status(401).json({ message: "Invalid password" });
         }
 
-        const { refreshToken, accessToken } = await generateAccessAndRefreshToken(user._id)
+        const { refreshToken, accessToken } = await generateAccessAndRefreshToken(user._id);
 
         const options = {
             httpOnly: true,
-            secure: false
-        }
+            secure: false // set true if using HTTPS in production
+        };
+
+        // Send tokens in both cookies (optional) and JSON response
         return res
             .status(200)
             .cookie("accessToken", accessToken, options)
             .cookie("refreshToken", refreshToken, options)
-            .json({ message: "User logged in successfully", })
+            .json({
+                message: "User logged in successfully",
+                token: accessToken // <- frontend can read this
+            });
     } catch (error) {
-        return res.status(500).json({ message: "Faild login" })
+        console.log(error);
+        return res.status(500).json({ message: "Failed login" });
     }
 }
+
 
 const logoutUser = async (req, res) => {
     res
