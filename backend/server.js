@@ -28,7 +28,10 @@ const corsOptions = {
   ],
   optionsSuccessStatus: 200 // For legacy browsers
 };
-app.use(cors(corsOptions))
+app.use(cors({
+  origin: "https://music-pulseplay.onrender.com", // your deployed frontend
+  credentials: true  // allow cookies to be sent
+}));
 
 // Middlewares
 app.use(express.json());

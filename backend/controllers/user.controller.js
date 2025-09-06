@@ -65,17 +65,21 @@ const loginUser = async (req, res) => {
 
         const { refreshToken, accessToken } = await generateAccessAndRefreshToken(user._id);
 
-        const options = {
+        // Determine cookie options based on environment
+        const isProduction = process.env.NODE_ENV === "production";
+        const cookieOptions = {
             httpOnly: true,
-            secure: false,        // ❌ must be false on localhost
-            sameSite: "lax",      // ✅ works cross-site (5173 → 4000)
+            secure: isProduction,           // true for deployed HTTPS
+            sameSite: isProduction ? "none" : "lax", // cross-origin for deployed frontend
             maxAge: 7 * 24 * 60 * 60 * 1000
         };
-        console.log(user)
+
+        console.log(user);
+
         return res
             .status(200)
-            .cookie("accessToken", accessToken, options)
-            .cookie("refreshToken", refreshToken, options)
+            .cookie("accessToken", accessToken, cookieOptions)
+            .cookie("refreshToken", refreshToken, cookieOptions)
             .json({
                 message: "User logged in successfully",
                 user: {
@@ -88,7 +92,8 @@ const loginUser = async (req, res) => {
         console.log(error);
         return res.status(500).json({ message: "Failed login" });
     }
-}
+};
+
 
 
 const logoutUser = async (req, res) => {
