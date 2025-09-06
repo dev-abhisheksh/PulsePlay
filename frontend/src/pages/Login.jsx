@@ -19,21 +19,12 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(
-                `${pp}/api/login`,
-                { username, password }
+            const res = await axios.post(`${pp}/api/login`,
+                {username, password},   
+                { withCredentials: true }
             );
-
-            // Assuming backend sends { token: "JWT_TOKEN_HERE" }
-            const token = res.data.token;
-            if (!token) {
-                toast.error("Login failed: No token received");
-                return;
-            }
-
-            localStorage.setItem('accessToken', res.data.token);
-            toast.success("Logged in successfully!");
-            navigate("/"); // redirect to home
+            toast.success("Logged in")
+            navigate("/")
         } catch (error) {
             console.log("Login error:", error);
             if (error.response) {

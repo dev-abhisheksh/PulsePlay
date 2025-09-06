@@ -67,21 +67,21 @@ const loginUser = async (req, res) => {
 
         const options = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // true for HTTPS in production
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' for cross-origin in production
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            secure: false,        // ❌ must be false on localhost
+            sameSite: "lax",      // ✅ works cross-site (5173 → 4000)
+            maxAge: 7 * 24 * 60 * 60 * 1000
         };
-
+        console.log(user)
         return res
             .status(200)
             .cookie("accessToken", accessToken, options)
             .cookie("refreshToken", refreshToken, options)
             .json({
                 message: "User logged in successfully",
-                token: accessToken, // frontend can read this
                 user: {
                     id: user._id,
                     username: user.username,
+                    role: user.role
                 }
             });
     } catch (error) {
@@ -100,10 +100,16 @@ const logoutUser = async (req, res) => {
 };
 
 const usersCount = async (req, res) => {
-    const users = await User.find()
-    res.json(users)
+    try {
+        // This should fetch ALL users, not just req.user
+        const users = await User.find({})  // Get ALL users
+        console.log("All users found:", users.length)
+        res.json(users)
+    } catch (error) {
+        console.log("Error:", error)
+        res.status(500).json({ error: error.message })
+    }
 }
-
 
 
 export {

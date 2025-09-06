@@ -28,7 +28,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const res = await axios.get("https://pulseplay-8e09.onrender.com/api/verify", { withCredentials: true })
+      const res = await axios.get(`${pp}/api/verify`, { withCredentials: true })
       setUsername(res.data.user)
     }
 
@@ -36,16 +36,20 @@ const AdminDashboard = () => {
   }, [])
 
   const handleLogout = async () => {
-    await axios.get("https://pulseplay-8e09.onrender.com/api/logout", { withCredentials: true })
+    await axios.get(`${pp}/api/logout`, { withCredentials: true })
     navigate("/login");
     toast.success("Logged out")
   }
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const res = await axios.get("https://pulseplay-8e09.onrender.com/api/all-users", { withCredentials: true })
-      setUser(res.data)
-      console.log(res.data)
+      try {
+        const res = await axios.get(`${pp}/api/all-users`, { withCredentials: true })
+        setUser(res.data)
+        // console.log(res.data.user)
+      } catch (error) {
+        console.error(error)
+      }
     }
     fetchUsers()
   }, [])
@@ -67,7 +71,7 @@ const AdminDashboard = () => {
 
     try {
       const response = await axios.post(
-        "https://pulseplay-8e09.onrender.com/api/song/add",
+        `${pp}/api/song/add`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

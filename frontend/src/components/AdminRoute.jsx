@@ -11,49 +11,14 @@ const AdminRoute = ({ children }) => {
   useEffect(() => {
     const checkAdmin = async () => {
       try {
-        console.log("=== AdminRoute Debug ===");
-
-        // Get token from localStorage
-        const token = localStorage.getItem('accessToken');
-        console.log("Token from localStorage:", token ? "Token exists" : "No token");
-
-        const config = {
-          withCredentials: true, // for cookies
-        };
-
-        // If we have a token in localStorage, add it to headers
-        if (token) {
-          config.headers = {
-            'Authorization': `Bearer ${token}`
-          };
-          console.log("Added Authorization header");
-        }
-
-        console.log("Making request to verify endpoint...");
-        const res = await axios.get(
-          `${pp}/api/verify`,
-          config
-        );
-
-        console.log("Verify response:", res.data);
-
-        // Check if user has admin role
-        if (res.data.user && res.data.user.role === 'admin') {
-          setIsAdmin(true);
-          console.log("✅ User is admin");
-        } else {
-          console.log("❌ User is not admin, role:", res.data.user?.role);
-          setIsAdmin(false);
-        }
+        const res = await axios.get(`${pp}/api/verify`, {
+          withCredentials: true
+        })
+        console.log(res.data.user.role)
+        setIsAdmin(res.data.user.role === "admin")
 
       } catch (error) {
-        console.log("❌ Admin verification failed:", error.response?.status, error.message);
         setIsAdmin(false);
-
-        // Clear token if it's invalid
-        if (error.response?.status === 401) {
-          localStorage.removeItem('accessToken');
-        }
       } finally {
         setIsLoading(false);
       }
@@ -63,7 +28,7 @@ const AdminRoute = ({ children }) => {
   }, []);
 
   if (isLoading) return <div>Loading...</div>;
-  if (!isAdmin) return <Navigate to="/login" />;
+  if (!isAdmin) return <Navigate to="/" />;
 
   return children;
 };
