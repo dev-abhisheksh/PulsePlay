@@ -1,38 +1,44 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
-import { Navigate } from 'react-router-dom'
+import React, { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
+import axios from "axios";
 
 const ProtectedRoute = ({ children }) => {
-  const [isLoading, setIsLoading] = useState(true)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const verifyUser = async () => {
       try {
-        axios.get("https://pulseplay-8e09.onrender.com/api/verify", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
+        const res = await axios.get(
+          "https://pulseplay-8e09.onrender.com/api/verify",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            withCredentials: true, // only if backend uses cookies
           }
-        })
-          .then(res => console.log(res))
-          .catch(err => console.log(err));
+        );
 
-        setIsAuthenticated(true)
+        if (res.status === 200) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
       } catch (error) {
-        setIsAuthenticated(false)
+        console.log("Verification failed:", error);
+        setIsAuthenticated(false);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
-    verifyUser();
-  }, [])
-  if (isLoading) return <div>Loading...</div>;
+    };
 
+    verifyUser();
+  }, []);
+
+  if (isLoading) return <div>Loading...</div>;
   if (!isAuthenticated) return <Navigate to="/login" />;
 
   return children;
-}
+};
 
-export default ProtectedRoute
+export default ProtectedRoute;
