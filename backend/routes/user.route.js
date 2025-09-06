@@ -1,18 +1,18 @@
 import { Router } from "express";
-import { verifyUser } from "../middlewares/auth.middleware.js"
+import { verifyAdmin, verifyUser } from "../middlewares/auth.middleware.js"
 import { register, loginUser, logoutUser, usersCount } from "../controllers/user.controller.js";
 
 const router = Router();
 
 router.post("/register", register)
 router.post("/login", loginUser)
-router.get("/logout", verifyUser, logoutUser)
+router.get("/logout", logoutUser)
 
 router.get("/verify", verifyUser, (req, res) => {
     // req.user is set by verifyUser middleware
     res.status(200).json({ user: req.user });
 });
 
-router.get("/all-users", verifyUser, usersCount)
+router.get("/all-users", verifyUser, verifyAdmin, usersCount)
 
 export default router;

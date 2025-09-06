@@ -18,7 +18,7 @@ const generateAccessAndRefreshToken = async (userId) => {
 const register = async (req, res) => {
     try {
         console.log("Registration request received:", req.body)
-        const { username, password, role } = req.body;
+        const { username, password } = req.body;
 
         if (!username || !password) {
             return res.status(401).json({ message: "Both fields are required" })
@@ -32,7 +32,7 @@ const register = async (req, res) => {
         const user = await User.create({
             username: username.toLowerCase(),
             password,
-            role: role
+            role: "user"
         })
 
         const userResponse = await User.findById(user._id).select("-password")

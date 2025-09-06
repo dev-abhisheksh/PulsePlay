@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import { IoAddCircleOutline } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const AdminDashboard = () => {
   const [menuBarToggle, setMenuBarToggle] = useState(true)
@@ -17,11 +19,29 @@ const AdminDashboard = () => {
   const coverRef = useRef();
   const audioRef = useRef();
   const [uploading, setUploading] = useState(false)
+  const [username, setUsername] = useState()
+  const navigate = useNavigate()
+  
 
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const res = await axios.get("http://localhost:4000/api/all-users", { withCredentials: true })
+      const res = await axios.get("https://pulseplay-8e09.onrender.com/api/verify", { withCredentials: true })
+      setUsername(res.data.user)
+    }
+
+    fetchUsers()
+  }, [])
+
+  const handleLogout = async () => {
+    await axios.get("https://pulseplay-8e09.onrender.com/api/logout", { withCredentials: true })
+    navigate("/login");
+    toast.success("Logged out")
+  }
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const res = await axios.get("https://pulseplay-8e09.onrender.com/api/all-users", { withCredentials: true })
       setUser(res.data)
       console.log(res.data)
     }
@@ -45,7 +65,7 @@ const AdminDashboard = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/song/add",
+        "https://pulseplay-8e09.onrender.com/api/song/add",
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -67,7 +87,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const dataForAdmin = async () => {
       try {
-        const songData = await axios.get("http://localhost:4000/api/song/songs")
+        const songData = await axios.get("https://pulseplay-8e09.onrender.com/api/song/songs")
         setSongs(songData.data.songs)
         // console.log(songData.data.songs)
       } catch (error) {
@@ -144,8 +164,8 @@ const AdminDashboard = () => {
           </ul>
 
           <div className='px-3 flex justify-between items-center'>
-            <h1 className='text-white text-2xl'>User</h1>
-            <button className='text-white text-sm border border-[#FD830D] px-2 py-1 rounded-md'>LogOut</button>
+            <h1 className='text-white text-2xl'>{username? username.username : "user"}</h1>
+            <button onClick={handleLogout} className='text-white text-sm border border-[#FD830D] px-2 py-1 rounded-md'>LogOut</button>
           </div>
         </div>
 
@@ -163,7 +183,7 @@ const AdminDashboard = () => {
           </div>
           <div className='flex items-center flex-col pt-3 gap-2 border  rounded-md h-22 w-25 bg-[#FD830D]'>
             <p className='text-sm text-white font-semibold'>Total Users</p>
-            <h1 className='text-3xl font-bold text-white'>{user? (user.length): (<p className='text-sm'>Loading</p>)}</h1>
+            <h1 className='text-3xl font-bold text-white'>{user ? (user.length) : (<p className='text-sm'>Loading</p>)}</h1>
           </div>
           <div className='flex items-center flex-col pt-3 gap-2 border  rounded-md h-22 w-25 bg-[#FD830D]'>
             <p className='text-sm text-white font-semibold'>Total Songs</p>

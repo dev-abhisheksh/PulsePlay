@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(cookieParser());
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:4000",
+    origin: process.env.CORS_ORIGIN || "https://music-pulseplay.onrender.com",
     credentials: true
 }));
 
@@ -28,6 +28,6 @@ app.use("/api/playlist", playlistRoutes)
 
 dbConnection()
 
-app.listen(process.env.PORT || 3000, () => {
+app.listen(process.env.PORT || 4000, () => {
     console.log(`Server running on port ${process.env.PORT}`)
 })

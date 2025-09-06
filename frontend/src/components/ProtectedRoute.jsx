@@ -11,7 +11,7 @@ const ProtectedRoute = ({children}) => {
     useEffect(() => {
         const verifyUser = async () => {
             try {
-                await axios.get("http://localhost:4000/api/verify", {
+                await axios.get("https://pulseplay-8e09.onrender.com/api/verify", {
                     withCredentials: true
                 })
                 setIsAuthenticated(true)
