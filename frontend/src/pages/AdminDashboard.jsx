@@ -21,7 +21,9 @@ const AdminDashboard = () => {
   const [uploading, setUploading] = useState(false)
   const [username, setUsername] = useState()
   const navigate = useNavigate()
-  
+  const pp = "https://pulseplay-8e09.onrender.com"
+  const localhost = "http://localhost:4000"
+
 
 
   useEffect(() => {
@@ -87,7 +89,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const dataForAdmin = async () => {
       try {
-        const songData = await axios.get("https://pulseplay-8e09.onrender.com/api/song/songs")
+        const songData = await axios.get(`${pp}/api/song/songs`)
         setSongs(songData.data.songs)
         // console.log(songData.data.songs)
       } catch (error) {
@@ -164,7 +166,7 @@ const AdminDashboard = () => {
           </ul>
 
           <div className='px-3 flex justify-between items-center'>
-            <h1 className='text-white text-2xl'>{username? username.username : "user"}</h1>
+            <h1 className='text-white text-2xl'>{username ? username.username : "user"}</h1>
             <button onClick={handleLogout} className='text-white text-sm border border-[#FD830D] px-2 py-1 rounded-md'>LogOut</button>
           </div>
         </div>

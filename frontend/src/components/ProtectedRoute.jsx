@@ -6,35 +6,37 @@ const ProtectedRoute = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  const pp = "https://pulseplay-8e09.onrender.com";
+  const localhost = "http://localhost:4000";
+
   useEffect(() => {
     const verifyUser = async () => {
       try {
-        // Get token from localStorage as fallback
-        const token = localStorage.getItem('accessToken');
-        
-        const config = {
-          withCredentials: true, // for cookies
-        };
-        
-        // If we have a token in localStorage, add it to headers
-        if (token) {
-          config.headers = {
-            'Authorization': `Bearer ${token}`
-          };
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+          setIsAuthenticated(false);
+          setIsLoading(false);
+          return;
         }
 
-        const res = await axios.get(
-          "https://pulseplay-8e09.onrender.com/api/verify",
-          config
-        );
+        const res = await axios.get(`${pp}/api/verify`, {
+          headers: {
+            Authorization: `Bearer ${token}`, // ✅ Send token to backend
+          },
+        });
 
+        console.log("Verification response:", res.data);
         setIsAuthenticated(res.status === 200);
       } catch (error) {
-        console.log("Verification failed:", error.response?.status, error.message);
+        console.log(
+          "Verification failed:",
+          error.response?.status,
+          error.message
+        );
         setIsAuthenticated(false);
-        
+
         // Clear any stored tokens if verification fails
-        localStorage.removeItem('accessToken');
+        localStorage.removeItem("accessToken");
       } finally {
         setIsLoading(false);
       }

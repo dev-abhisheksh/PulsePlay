@@ -15,11 +15,13 @@ import Register from "./pages/Register";
 const App = () => {
   const [songs, setSongs] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const render = "https://pulseplay-8e09.onrender.com"
+  const localhost = "http://localhost:4000"
 
   useEffect(() => {
     const fetchSongs = async () => {
       try {
-        const res = await axios.get("https://pulseplay-8e09.onrender.com/api/song/songs");
+        const res = await axios.get(`${localhost}/api/song/songs`);
         setSongs(res.data.songs);
         // console.log("Fetched songs:", res.data.songs);
       } catch (error) {

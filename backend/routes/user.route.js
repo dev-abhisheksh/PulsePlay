@@ -13,6 +13,6 @@ router.get("/verify", verifyUser, (req, res) => {
     res.status(200).json({ user: req.user });
 });
 
-router.get("/all-users", verifyUser, verifyAdmin, usersCount)
+router.get("/all-users", verifyAdmin, usersCount)
 
 export default router;

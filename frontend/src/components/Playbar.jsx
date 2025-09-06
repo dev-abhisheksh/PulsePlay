@@ -16,12 +16,13 @@ const Playbar = ({ songs, currentIndex, setCurrentIndex }) => {
   const [addToPlaylist, setAddToPlaylist] = useState(true)
   const [user, setUser] = useState(null)
   const navigate = useNavigate()
-
+  const pp = "https://pulseplay-8e09.onrender.com"
+  const localhost = "http://localhost:4000"
 
  
 
 const handleLogout = async () => {
-    await axios.get("https://pulseplay-8e09.onrender.com/api/logout", { withCredentials: true })
+    await axios.get(`${pp}/api/logout`, { withCredentials: true })
     navigate("/login");
     toast.success("Logged out")
   }
@@ -29,7 +30,7 @@ const handleLogout = async () => {
 useEffect(() => {
   const fetchUser = async () => {
     try {
-      const res = await axios.get("https://pulseplay-8e09.onrender.com/api/verify", { withCredentials: true })
+      const res = await axios.get(`${pp}/api/verify`, { withCredentials: true })
       setUser(res.data.user)
       console.log(res.data.user)
     } catch (error) {

@@ -82,7 +82,6 @@ const loginUser = async (req, res) => {
                 user: {
                     id: user._id,
                     username: user.username,
-                    // other safe user fields
                 }
             });
     } catch (error) {
