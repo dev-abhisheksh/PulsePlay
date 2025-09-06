@@ -5,25 +5,40 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 const Login = () => {
-    const [username, setUsername] = useState()
-    const [password, setPassword] = useState()
-    const [passVisible, setPassVisible] = useState(false)
-    const navigate = useNavigate()
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [passVisible, setPassVisible] = useState(false);
+    const navigate = useNavigate();
 
-    const handlePassVisibility = async () => {
-        setPassVisible(!passVisible)
+    const handlePassVisibility = () => {
+        setPassVisible(!passVisible);
     }
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            toast.success("Logged in")
-            const res = await axios.post("https://pulseplay-8e09.onrender.com/api/login", { username, password },
-                { withCredentials: true }
+            const res = await axios.post(
+                "https://pulseplay-8e09.onrender.com/api/login",
+                { username, password }
             );
-            navigate("/")
+
+            // Assuming backend sends { token: "JWT_TOKEN_HERE" }
+            const token = res.data.token;
+            if (!token) {
+                toast.error("Login failed: No token received");
+                return;
+            }
+
+            localStorage.setItem("token", token);
+            toast.success("Logged in successfully!");
+            navigate("/"); // redirect to home
         } catch (error) {
-            console.log("Error", error)
+            console.log("Login error:", error);
+            if (error.response) {
+                toast.error(error.response.data.message || "Login failed");
+            } else {
+                toast.error("Network error, please try again");
+            }
         }
     }
 
@@ -101,4 +116,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default Login;
