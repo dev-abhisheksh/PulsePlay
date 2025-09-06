@@ -8,24 +8,30 @@ const ProtectedRoute = ({ children }) => {
 
   useEffect(() => {
     const verifyUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setIsAuthenticated(false);
+        setIsLoading(false);
+        return;
+      }
+
       try {
         const res = await axios.get(
           "https://pulseplay-8e09.onrender.com/api/verify",
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${token}`,
             },
-            withCredentials: true, // only if backend uses cookies
           }
         );
 
-        if (res.status === 200) {
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-        }
+        setIsAuthenticated(res.status === 200);
       } catch (error) {
-        console.log("Verification failed:", error);
+        if (error.response?.status === 401) {
+          console.log("Unauthorized: Token missing or invalid");
+        } else {
+          console.log("Verification failed:", error.message);
+        }
         setIsAuthenticated(false);
       } finally {
         setIsLoading(false);
