@@ -14,7 +14,7 @@ const app = express();
 const corsOptions = {
   origin: [
     'http://localhost:5173',  // Your Vite dev server
-    'https://pulseplay-8e09.onrender.com', 
+    'https://music-pulseplay.onrender.com', 
   
   ],
   credentials: true, // Allow cookies
