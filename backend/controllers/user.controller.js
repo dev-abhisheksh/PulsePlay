@@ -67,17 +67,23 @@ const loginUser = async (req, res) => {
 
         const options = {
             httpOnly: true,
-            secure: false // set true if using HTTPS in production
+            secure: process.env.NODE_ENV === 'production', // true for HTTPS in production
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' for cross-origin in production
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
         };
 
-        // Send tokens in both cookies (optional) and JSON response
         return res
             .status(200)
             .cookie("accessToken", accessToken, options)
             .cookie("refreshToken", refreshToken, options)
             .json({
                 message: "User logged in successfully",
-                token: accessToken // <- frontend can read this
+                token: accessToken, // frontend can read this
+                user: {
+                    id: user._id,
+                    username: user.username,
+                    // other safe user fields
+                }
             });
     } catch (error) {
         console.log(error);

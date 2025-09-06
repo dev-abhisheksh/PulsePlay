@@ -29,7 +29,7 @@ const Login = () => {
                 return;
             }
 
-            localStorage.setItem("token", token);
+            localStorage.setItem('accessToken', res.data.token);
             toast.success("Logged in successfully!");
             navigate("/"); // redirect to home
         } catch (error) {
@@ -55,13 +55,13 @@ const Login = () => {
                             {/* Username Input */}
                             <div>
                                 <h1 className='text-white font-bold pl-3'>USERNAME</h1>
-                                <input 
-                                    className='h-10 w-70 border-0 bg-[#555C7C] rounded-2xl px-4 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-600' 
-                                    type="text" 
-                                    value={username} 
-                                    onChange={(e) => setUsername(e.target.value)} 
+                                <input
+                                    className='h-10 w-70 border-0 bg-[#555C7C] rounded-2xl px-4 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-600'
+                                    type="text"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
                                     placeholder="Enter username"
-                                    required 
+                                    required
                                 />
                             </div>
 
@@ -69,17 +69,17 @@ const Login = () => {
                             <div>
                                 <h1 className='text-white font-bold pl-3'>PASSWORD</h1>
                                 <div className='flex justify-between items-center h-10 w-70 px-4 bg-[#555C7C] rounded-2xl focus-within:ring-2 focus-within:ring-amber-600'>
-                                    <input 
-                                        className='bg-transparent text-white placeholder-gray-300 flex-1 outline-none border-none focus:outline-none' 
-                                        onChange={(e) => setPassword(e.target.value)} 
-                                        type={passVisible ? "text" : "password"} 
-                                        value={password} 
+                                    <input
+                                        className='bg-transparent text-white placeholder-gray-300 flex-1 outline-none border-none focus:outline-none'
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        type={passVisible ? "text" : "password"}
+                                        value={password}
                                         placeholder="Enter password"
-                                        required 
+                                        required
                                     />
                                     <div onClick={handlePassVisibility} className='cursor-pointer ml-2'>
-                                        {passVisible ? 
-                                            <FaRegEyeSlash size={20} className='text-white hover:text-amber-600 transition-colors' /> : 
+                                        {passVisible ?
+                                            <FaRegEyeSlash size={20} className='text-white hover:text-amber-600 transition-colors' /> :
                                             <FaRegEye size={20} className='text-white hover:text-amber-600 transition-colors' />
                                         }
                                     </div>
@@ -88,8 +88,8 @@ const Login = () => {
 
                             {/* Submit Button */}
                             <div>
-                                <button 
-                                    className='h-10 w-70 bg-[#1059FF] rounded-2xl text-white font-bold hover:bg-[#0d4dd1] transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400' 
+                                <button
+                                    className='h-10 w-70 bg-[#1059FF] rounded-2xl text-white font-bold hover:bg-[#0d4dd1] transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400'
                                     type='submit'
                                 >
                                     Login
@@ -100,7 +100,7 @@ const Login = () => {
                             <div className='text-center'>
                                 <p className='text-gray-300 text-sm'>
                                     Don't have an account?{' '}
-                                    <span 
+                                    <span
                                         onClick={() => navigate('/register')}
                                         className='text-amber-600 cursor-pointer hover:text-amber-500 transition-colors font-semibold underline'
                                     >
