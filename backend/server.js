@@ -12,10 +12,11 @@ dotenv.config();
 const app = express();
 
 // Allowed origins
-const allowedOrigins = [
-  "http://localhost:5173",                // local dev
-  "https://music-pulseplay.onrender.com" // deployed frontend
-];
+const options = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production", // must be true for HTTPS in production
+  sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", // cross-site cookies
+};
 
 // CORS middleware
 app.use(cors({
