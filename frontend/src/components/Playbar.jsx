@@ -98,8 +98,8 @@ const Playbar = ({ songs, currentIndex, setCurrentIndex }) => {
   const progress = duration ? (currentTime / duration) * 100 : 0
 
   return (
-    <div className='w-screen h-screen bg-[#1A1824] flex justify-center '>
-      <div className='flex justify-between flex-col pt-10 pb-20 h-[90%] pl-3 overflow-hidden'>
+    <div className='w-screen h-screen bg-[#1A1824] flex justify-center overflow-y-hidden'>
+      <div className='flex justify-between flex-col pt-10 pb-20 h-full pl-3 overflow-y-hidden'>
         {/* Header */}
         <div className='flex justify-between items-center'>
           <div>
