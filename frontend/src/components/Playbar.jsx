@@ -98,8 +98,8 @@ const Playbar = ({ songs, currentIndex, setCurrentIndex }) => {
   const progress = duration ? (currentTime / duration) * 100 : 0
 
   return (
-    <div className='w-screen h-screen bg-[#1A1824] flex justify-center overflow-y-hidden'>
-      <div className='flex justify-between flex-col pt-10 pb-20 h-[95%] pl-3 overflow-y-hidden'>
+   <div className='w-screen h-screen bg-[#1A1824] flex justify-center overflow-hidden'>
+  <div className='flex justify-between flex-col pt-5 pb-10 h-full px-3'>
         {/* Header */}
         <div className='flex justify-between items-center'>
           <div>
@@ -203,7 +203,7 @@ const Playbar = ({ songs, currentIndex, setCurrentIndex }) => {
             <h2 className='font-semi text-white text-sm'>{currentSong ? currentSong.artist : "Loading"}</h2>
           </div>
           <div>
-            <div className='h-2 bg-white w-80 rounded-md'>
+            <div className='h-2 bg-white w-full max-w-80 rounded-md'>
               <div
                 className="h-2 bg-white w-80 rounded-md cursor-pointer"
                 onClick={(e) => {
