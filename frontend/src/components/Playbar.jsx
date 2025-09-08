@@ -99,7 +99,7 @@ const Playbar = ({ songs, currentIndex, setCurrentIndex }) => {
 
   return (
     <div className='w-screen h-screen bg-[#1A1824] flex justify-center '>
-      <div className='flex justify-between flex-col pt-10 pb-20 h-full pl-3 overflow-hidden'>
+      <div className='flex justify-between flex-col pt-10 pb-20 h-[90%] pl-3 overflow-hidden'>
         {/* Header */}
         <div className='flex justify-between items-center'>
           <div>
