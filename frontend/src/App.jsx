@@ -21,7 +21,7 @@ const App = () => {
   useEffect(() => {
     const fetchSongs = async () => {
       try {
-        const res = await axios.get(`${localhost}/api/song/songs`);
+        const res = await axios.get(`${render}/api/song/songs`);
         setSongs(res.data.songs);
         // console.log("Fetched songs:", res.data.songs);
       } catch (error) {
