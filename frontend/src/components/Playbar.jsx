@@ -99,7 +99,7 @@ const progress = duration ? (currentTime / duration) * 100 : 0
 
 return (
   <div className='w-screen h-screen bg-[#1A1824] flex justify-center  '>
-    <div className='flex justify-between flex-col pt-5 pb-10  '>
+    <div className='flex justify-between flex-col pt-5 pb-10 h-screen px-3 py-2 overflow-hidden '>
       {/* Header */}
       <div className='flex justify-between items-center'>
         <div>
@@ -175,8 +175,8 @@ return (
       </div>
 
 
-      <div className='flex justify-between'>
-        <div className='border bg-white h-65 w-65 rounded-md'>
+      <div className='flex justify-between gap-4'>
+        <div className='border bg-white h-[35vh] w-[70vw] rounded-md'>
           {currentSong && currentSong.coverImage ?
             (<img
               className="h-full w-full object-cover p-1 rounded-md"

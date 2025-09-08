@@ -23,7 +23,7 @@ const Login = () => {
                 {username, password},   
                 { withCredentials: true }
             );
-            toast.success("Logged in")
+            toast.success("Logged in")  
             navigate("/")
         } catch (error) {
             console.log("Login error:", error);
