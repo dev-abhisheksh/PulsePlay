@@ -22,7 +22,7 @@ const App = () => {
   useEffect(() => {
     const fetchSongs = async () => {
       try {
-        const res = await axios.get(`${localhost}/api/song/songs`);
+        const res = await axios.get(`${pp}/api/song/songs`);
         setSongs(res.data.songs);
       } catch (error) {
         console.error("Error fetching songs", error);

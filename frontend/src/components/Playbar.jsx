@@ -30,7 +30,7 @@ const Playbar = ({ songs, currentIndex, setCurrentIndex }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(`${localhost}/api/verify`, { withCredentials: true })
+        const res = await axios.get(`${pp}/api/verify`, { withCredentials: true })
         setUser(res.data.user)
         console.log(res.data.user)
       } catch (error) {
