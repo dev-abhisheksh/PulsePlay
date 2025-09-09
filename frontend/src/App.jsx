@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Playbar from "./components/Playbar";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/homepage/Navbar";
 import MainBody from "./components/MainBody";
 import { Routes, Route } from "react-router-dom";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -11,19 +11,19 @@ import AdminRoute from "./components/AdminRoute";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Register from "./pages/Register";
+import ExplorePage from "./pages/ExplorePage";
 
 const App = () => {
   const [songs, setSongs] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const pp = "https://pulseplay-8e09.onrender.com"
-  const localhost = "http://localhost:4000"
+  const pp = "https://pulseplay-8e09.onrender.com";
+  const localhost = "http://localhost:4000";
 
   useEffect(() => {
     const fetchSongs = async () => {
       try {
-        const res = await axios.get(`${pp}/api/song/songs`);
+        const res = await axios.get(`${localhost}/api/song/songs`);
         setSongs(res.data.songs);
-        // console.log("Fetched songs:", res.data.songs);
       } catch (error) {
         console.error("Error fetching songs", error);
       }
@@ -35,25 +35,46 @@ const App = () => {
 
   return (
     <div className="App">
+      <Playbar
+        songs={songs}
+        currentIndex={currentIndex}
+        setCurrentIndex={setCurrentIndex}
+      />
       <Routes>
         <Route path="/login" element={<Login />} />
-        
-        {/* Home/Main Route */}
-        <Route 
-          path="/" 
+        <Route path="/register" element={<Register />} />
+
+        {/* Home/Main Route with Playbar */}
+        <Route
+          path="/"
           element={
             <ProtectedRoute>
-              <div className="flex">
-                <div className="block sm:block">
-                  <Playbar 
-                    songs={songs} 
-                    currentIndex={currentIndex} 
-                    setCurrentIndex={setCurrentIndex} 
-                  />
-                </div>
+              <div className="flex flex-col h-screen">
+                <ExplorePage
+                  songs={songs}
+                  currentIndex={currentIndex}
+                  setCurrentIndex={setCurrentIndex}
+                />
+
               </div>
             </ProtectedRoute>
-          } 
+          }
+        />
+
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <div className="flex flex-col h-screen">
+                <MainBody />
+                <Playbar
+                  songs={songs}
+                  currentIndex={currentIndex}
+                  setCurrentIndex={setCurrentIndex}
+                />
+              </div>
+            </ProtectedRoute>
+          }
         />
 
         {/* Admin Route */}
@@ -66,25 +87,12 @@ const App = () => {
           }
         />
 
-        <Route path="/register" element={<Register />}/>
-
-        {/* You might want to add more routes like: */}
-        <Route 
-          path="/home" 
-          element={
-            <ProtectedRoute>
-              <div className="flex">
-                <div className="block sm:block">
-                  <Playbar 
-                    songs={songs} 
-                    currentIndex={currentIndex} 
-                    setCurrentIndex={setCurrentIndex} 
-                  />
-                </div>
-              </div>
-            </ProtectedRoute>
-          } 
-        />
+        {/* Catch-all route for unmatched paths (optional) */}
+        <Route path="*" element={<ExplorePage
+          songs={songs}
+          currentIndex={currentIndex}
+          setCurrentIndex={setCurrentIndex}
+        />} />
       </Routes>
 
       {/* Toast Container for notifications */}

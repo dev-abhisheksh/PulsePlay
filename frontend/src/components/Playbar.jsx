@@ -22,7 +22,7 @@ const Playbar = ({ songs, currentIndex, setCurrentIndex }) => {
 
 
   const handleLogout = async () => {
-    await axios.get(`${pp}/api/logout`, { withCredentials: true })
+    await axios.get(`${localhost}/api/logout`, { withCredentials: true })
     navigate("/login");
     toast.success("Logged out")
   }
@@ -30,7 +30,7 @@ const Playbar = ({ songs, currentIndex, setCurrentIndex }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(`${pp}/api/verify`, { withCredentials: true })
+        const res = await axios.get(`${localhost}/api/verify`, { withCredentials: true })
         setUser(res.data.user)
         console.log(res.data.user)
       } catch (error) {
@@ -76,7 +76,7 @@ const Playbar = ({ songs, currentIndex, setCurrentIndex }) => {
   useEffect(() => {
     if (!audioRef.current) return
     if (playToggle) {
-      audioRef.current.play()
+      audioRef.current.play() 
     } else {
       audioRef.current.pause()
     }
@@ -98,8 +98,8 @@ const Playbar = ({ songs, currentIndex, setCurrentIndex }) => {
   const progress = duration ? (currentTime / duration) * 100 : 0
 
   return (
-   <div className='w-screen h-screen bg-[#1A1824] flex justify-center overflow-hidden'>
-  <div className='flex justify-between flex-col pt-5 pb-10 h-full px-3'>
+    <div className='w-screen h-0 bg-[#1A1824] flex justify-center overflow-hidden'>
+      <div className='flex justify-between flex-col pt-5 pb-10 h-full px-3'>
         {/* Header */}
         <div className='flex justify-between items-center'>
           <div>
@@ -148,7 +148,7 @@ const Playbar = ({ songs, currentIndex, setCurrentIndex }) => {
               </div>
               <div className='flex items-center gap-6'>
                 <FaSearch size={20} className='text-white' />
-                <h1>Search</h1>
+                <Link to="explore">Explore</Link>
               </div>
               <div className='flex items-center gap-6'>
                 <FaMusic size={20} className='text-white' />

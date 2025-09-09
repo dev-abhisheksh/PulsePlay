@@ -13,7 +13,7 @@ const ProtectedRoute = ({ children }) => {
   useEffect(() => {
     const verifyUser = async () => {
       try {
-        const res = await axios.get(`${pp}/api/verify`, {
+        const res = await axios.get(`${localhost}/api/verify`, {
           withCredentials: true
         });
         console.log("Verification response:", res.data);
