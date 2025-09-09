@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaArrowAltCircleLeft, FaPlay, FaArrowAltCircleRight, FaPause, FaAlignJustify, FaAlignRight, FaHome, FaSearch, FaMusic, FaDownload } from "react-icons/fa";
 import { MdPlaylistAddCheckCircle, MdPlaylistAddCircle, MdLoop, MdOutlineShuffle, MdAdminPanelSettings } from "react-icons/md";
 import { Link } from 'react-router-dom';
@@ -10,6 +10,7 @@ const Navbar = () => {
     const [menuBarToggle, setMenuBarToggle] = useState(true)
     const [user, setUser] = useState(null)
     const navigate = useNavigate()
+    const [isAdmin, setIsAdmin] = useState(false)
     const pp = "https://pulseplay-8e09.onrender.com"
     const localhost = "http://localhost:4000"
 
@@ -18,6 +19,21 @@ const Navbar = () => {
         navigate("/login");
         toast.success("Logged out")
     }
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            const res = await axios.get(`${pp}/api/verify`, { withCredentials: true })
+
+            const userData = res.data.user;
+            if (userData && userData.role === "admin") {
+                setIsAdmin(true)
+            }
+
+            console.log(res.data)
+        }
+
+        fetchUsers()
+    }, [])
 
     return (
         <div>
@@ -55,13 +71,13 @@ const Navbar = () => {
                             <FaDownload size={20} className='text-white' />
                             <h1>Download</h1>
                         </div>
-                        <div className='flex items-center gap-6'>
+
+                        {isAdmin ? (<div className='flex items-center gap-6'>
                             <MdAdminPanelSettings size={27} className='text-white' />
                             <Link to="admin">
                                 Admin
                             </Link>
-
-                        </div>
+                        </div>) : ""}
                     </ul>
 
                     <div className='px-3 flex justify-between items-center'>
@@ -69,8 +85,15 @@ const Navbar = () => {
                         <button onClick={handleLogout} className='text-white text-sm border border-[#FD830D] px-2 py-1 rounded-md'>LogOut</button>
                     </div>
                 </div>
-            </div>
 
+                
+            </div>
+ {!menuBarToggle && (
+          <div
+            className="fixed inset-0 bg-opacity-40 z-30"
+            onClick={() => setMenuBarToggle(true)}
+          ></div>
+        )}
         </div>
 
     )

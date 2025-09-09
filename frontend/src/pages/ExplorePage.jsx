@@ -14,6 +14,8 @@ const ExplorePage = ({ songs, currentIndex, setCurrentIndex }) => {
   const pp = "https://pulseplay-8e09.onrender.com"
   const localhost = "http://localhost:4000"
 
+ 
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -37,16 +39,20 @@ const ExplorePage = ({ songs, currentIndex, setCurrentIndex }) => {
   }
 
   return (
-    <div className="flex flex-col h-screen">
-      <Navbar />
+    <div className="flex flex-col h-screen justify-between">
+      <div>
+        <Navbar />
 
-      <SearchBar onSongSelect={handleSongSelect} />
+        <SearchBar onSongSelect={handleSongSelect} />
+      </div>
 
-      <PlayerBottom
-        songs={songs}
-        currentIndex={currentIndex}
-        setCurrentIndex={setCurrentIndex}
-      />
+      <div>
+        <PlayerBottom
+          songs={songs}
+          currentIndex={currentIndex}
+          setCurrentIndex={setCurrentIndex}
+        />
+      </div>
     </div>
   )
 }

@@ -46,7 +46,7 @@ const AdminDashboard = () => {
       try {
         const res = await axios.get(`${pp}/api/all-users`, { withCredentials: true })
         setUser(res.data)
-        // console.log(res.data.user)
+        console.log(res.data.user.role)
       } catch (error) {
         console.error(error)
       }
