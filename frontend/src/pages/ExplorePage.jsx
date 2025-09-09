@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../components/homepage/Navbar'
 import PlayerBottom from '../components/homepage/PlayerBottom'
+import Grid from '../components/homepage/Grid'
 import SearchBar from '../components/homepage/SeachBar'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
@@ -14,7 +15,7 @@ const ExplorePage = ({ songs, currentIndex, setCurrentIndex }) => {
   const pp = "https://pulseplay-8e09.onrender.com"
   const localhost = "http://localhost:4000"
 
- 
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -45,7 +46,11 @@ const ExplorePage = ({ songs, currentIndex, setCurrentIndex }) => {
 
         <SearchBar onSongSelect={handleSongSelect} />
       </div>
-
+      <Grid
+        songs={songs}
+        currentIndex={currentIndex}
+        setCurrentIndex={setCurrentIndex}
+      />
       <div>
         <PlayerBottom
           songs={songs}

@@ -23,14 +23,14 @@ const PlayerBottom = ({ songs, currentIndex, setCurrentIndex }) => {
     const handleNext = () => {
         if (songs.length > 0) {
             setCurrentIndex((prev) => (prev + 1) % songs.length)
-            setPlayToggle(true) // auto play next
+            setPlayToggle(true)
         }
     }
 
     const handlePrev = () => {
         if (songs.length > 0) {
             setCurrentIndex((prev) => (prev - 1 + songs.length) % songs.length)
-            setPlayToggle(true) // auto play prev
+            setPlayToggle(true)
         }
     }
 
