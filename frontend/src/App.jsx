@@ -35,11 +35,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <Playbar
-        songs={songs}
-        currentIndex={currentIndex}
-        setCurrentIndex={setCurrentIndex}
-      />
+      
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
