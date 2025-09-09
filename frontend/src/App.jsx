@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Playbar from "./components/Playbar";
+// import Playbar from "./components/Playbar";
 import Navbar from "./components/homepage/Navbar";
 import MainBody from "./components/MainBody";
 import { Routes, Route } from "react-router-dom";
