@@ -23,8 +23,8 @@ const Navbar = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             const res = await axios.get(`${pp}/api/verify`, { withCredentials: true })
-
             const userData = res.data.user;
+            setUser(userData)
             if (userData && userData.role === "admin") {
                 setIsAdmin(true)
             }
@@ -81,7 +81,7 @@ const Navbar = () => {
                     </ul>
 
                     <div className='px-3 flex justify-between items-center'>
-                        <h1 className='text-white text-2xl'>{user ? (user.username) : "user"}</h1>
+                        <h1 className='text-white text-2xl'>{user ? user.username : "user"}</h1>
                         <button onClick={handleLogout} className='text-white text-sm border border-[#FD830D] px-2 py-1 rounded-md'>LogOut</button>
                     </div>
                 </div>
