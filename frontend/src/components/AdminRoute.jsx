@@ -11,7 +11,7 @@ const AdminRoute = ({ children }) => {
   useEffect(() => {
     const checkAdmin = async () => {
       try {
-        const res = await axios.get(`${localhost}/api/verify`, {
+        const res = await axios.get(`${pp}/api/verify`, {
           withCredentials: true
         })
         console.log(res.data.user.role)

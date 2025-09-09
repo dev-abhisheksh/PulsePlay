@@ -28,7 +28,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const res = await axios.get(`${localhost}/api/verify`, { withCredentials: true })
+      const res = await axios.get(`${pp}/api/verify`, { withCredentials: true })
       setUsername(res.data.user)
     }
 
@@ -36,7 +36,7 @@ const AdminDashboard = () => {
   }, [])
 
   const handleLogout = async () => {
-    await axios.get(`${localhost}/api/logout`, { withCredentials: true })
+    await axios.get(`${pp}/api/logout`, { withCredentials: true })
     navigate("/login");
     toast.success("Logged out")
   }
@@ -44,7 +44,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get(`${localhost}/api/all-users`, { withCredentials: true })
+        const res = await axios.get(`${pp}/api/all-users`, { withCredentials: true })
         setUser(res.data)
         // console.log(res.data.user)
       } catch (error) {
@@ -93,7 +93,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const dataForAdmin = async () => {
       try {
-        const songData = await axios.get(`${localhost}/api/song/songs`)
+        const songData = await axios.get(`${pp}/api/song/songs`)
         setSongs(songData.data.songs)
         // console.log(songData.data.songs)
       } catch (error) {

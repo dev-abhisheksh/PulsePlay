@@ -7,6 +7,8 @@ const SearchBar = ({ onSongSelect }) => {
     const [searchValue, setSearchValue] = useState('')
     const [results, setResults] = useState([])
     const boxRef = useRef(null)
+    const pp = "https://pulseplay-8e09.onrender.com"
+    const localhost = "http://localhost:4000"
 
     useEffect(() => {
         if (!searchValue.trim()) {
@@ -17,7 +19,7 @@ const SearchBar = ({ onSongSelect }) => {
         const fetchSongs = async () => {
             try {
                 const res = await axios.get(
-                    `http://localhost:4000/api/song/search?title=${searchValue}`,
+                    `${pp}/api/song/search?title=${searchValue}`,
                     { withCredentials: true }
                 )
                 setResults(res.data.songs || [])
