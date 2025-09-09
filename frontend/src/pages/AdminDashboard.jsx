@@ -71,7 +71,7 @@ const AdminDashboard = () => {
 
     try {
       const response = await axios.post(
-        `${localhost}/api/song/add`,
+        `${pp}/api/song/add`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

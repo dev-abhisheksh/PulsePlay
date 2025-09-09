@@ -61,21 +61,7 @@ const App = () => {
           }
         />
 
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute>
-              <div className="flex flex-col h-screen">
-                <MainBody />
-                <Playbar
-                  songs={songs}
-                  currentIndex={currentIndex}
-                  setCurrentIndex={setCurrentIndex}
-                />
-              </div>
-            </ProtectedRoute>
-          }
-        />
+
 
         {/* Admin Route */}
         <Route
@@ -88,7 +74,7 @@ const App = () => {
         />
 
         {/* Catch-all route for unmatched paths (optional) */}
-        <Route path="*" element={<ExplorePage
+        <Route path="/" element={<ExplorePage
           songs={songs}
           currentIndex={currentIndex}
           setCurrentIndex={setCurrentIndex}
