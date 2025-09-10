@@ -42,8 +42,7 @@ const ExplorePage = ({ songs, currentIndex, setCurrentIndex }) => {
   return (
     <div className="flex flex-col h-screen justify-between">
       <div>
-        <Navbar />
-
+  
         <SearchBar onSongSelect={handleSongSelect} />
       </div>
       <Grid
@@ -51,13 +50,7 @@ const ExplorePage = ({ songs, currentIndex, setCurrentIndex }) => {
         currentIndex={currentIndex}
         setCurrentIndex={setCurrentIndex}
       />
-      <div>
-        <PlayerBottom
-          songs={songs}
-          currentIndex={currentIndex}
-          setCurrentIndex={setCurrentIndex}
-        />
-      </div>
+     
     </div>
   )
 }

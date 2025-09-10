@@ -65,7 +65,7 @@ const Navbar = () => {
                         </div>
                         <div className='flex items-center gap-6'>
                             <FaMusic size={20} className='text-white' />
-                            <h1>PlayList</h1>
+                            <Link to="/playlist">Playlist</Link>
                         </div>
                         <div className='flex items-center gap-6'>
                             <FaDownload size={20} className='text-white' />
@@ -74,7 +74,7 @@ const Navbar = () => {
 
                         {isAdmin ? (<div className='flex items-center gap-6'>
                             <MdAdminPanelSettings size={27} className='text-white' />
-                            <Link to="admin">
+                            <Link to="/admin">
                                 Admin
                             </Link>
                         </div>) : ""}
