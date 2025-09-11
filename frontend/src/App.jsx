@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute"
+import AdminDashboard from "./pages/AdminDashboard"
 
 const App = () => {
   const [songs, setSongs] = useState([]);
@@ -16,7 +17,14 @@ const App = () => {
   const [playToggle, setPlayToggle] = useState(false);
 
   const location = useLocation();
-  const hidePlayerAndNav = location.pathname === "/login" || location.pathname === "/register";
+  const hideNav =
+    location.pathname === "/login" ||
+    location.pathname === "/register" ||
+    location.pathname.startsWith("/admin");
+
+  const hidePlayer =
+    location.pathname === "/login" ||
+    location.pathname === "/register";
   const pp = "https://pulseplay-8e09.onrender.com"
   const localhost = "http://localhost:4000";
 
@@ -35,7 +43,7 @@ const App = () => {
   return (
     <div className="App flex flex-col h-screen">
       {/* Conditionally render Navbar */}
-      {!hidePlayerAndNav && <Navbar />}
+      {!hideNav && <Navbar />}
 
       {/* Routes */}
       <Routes>
@@ -79,7 +87,7 @@ const App = () => {
       </Routes>
 
       {/* Conditionally render PlayerBottom */}
-      {!hidePlayerAndNav && (
+      {!hidePlayer && (
         <PlayerBottom
           songs={songs}
           currentIndex={currentIndex}

@@ -65,7 +65,7 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
     const progress = duration ? (currentTime / duration) * 100 : 0;
 
     return (
-        <div className='bg-[#1A1824] relative'>
+        <div className='fixed bottom-0 left-0 w-full z- bg-[#1A1824]"'>
             {/* Expanded Player */}
             <div
                 className={`

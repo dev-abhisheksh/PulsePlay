@@ -111,7 +111,7 @@ const AdminDashboard = () => {
     <div className="w-screen h-screen bg-[#1A1824] flex flex-col">
       {/* Header */}
       <div className="flex justify-between items-center px-5 py-4">
-        <h1 className="text-white text-2xl font-bold">PulsePlay Admin</h1>
+        <h1 className="text-white text-2xl font-bold"><div className='flex gap-2'>PulsePlay <div className='text-red-500'>Admin</div></div></h1>
         <div
           onClick={() => setMenuBarToggle(!menuBarToggle)}
           className="relative w-6 h-6 cursor-pointer"
@@ -142,12 +142,14 @@ const AdminDashboard = () => {
         className={`fixed top-0 left-0 h-full w-[70%] border-r-2 flex flex-col gap-10 border-white bg-black bg-opacity-40 transform transition-transform duration-500 ease-in-out z-40
         ${menuBarToggle ? "-translate-x-full" : "translate-x-0"}`}
       >
-        <h2 className="pl-7 pt-5  text-white text-2xl font-bold">PulsePlay</h2>
+        <h2 className="pl-7 pt-5  text-white text-2xl font-bold"><div className='flex gap-2'>PulsePlay <div className='text-red-500'>Admin</div></div></h2>
         <div className='flex flex-col justify-between h-screen pb-10 px-3'>
           <ul className="flex flex-col gap-7 p-4 text-white">
             <div className='flex items-center gap-6'>
               <FaHome size={25} className='text-white ' />
-              <h1>Home</h1>
+              <Link to="/">
+                Player
+              </Link>
             </div>
             <div className='flex items-center gap-6'>
               <FaSearch size={20} className='text-white' />
@@ -155,18 +157,16 @@ const AdminDashboard = () => {
             </div>
             <div className='flex items-center gap-6'>
               <FaMusic size={20} className='text-white' />
-              <h1>PlayList</h1>
+              <Link to="/playlist" >PlayLists</Link>
             </div>
             <div className='flex items-center gap-6'>
               <FaDownload size={20} className='text-white' />
               <h1>Download</h1>
             </div>
-            <div className='flex items-center gap-6'>
+            {/* <div className='flex items-center gap-6'>
               <BsFillMusicPlayerFill size={27} className='text-white' />
-              <Link to="/">
-                Player
-              </Link>
-            </div>
+    
+            </div> */}
           </ul>
 
           <div className='px-3 flex justify-between items-center'>
@@ -192,8 +192,8 @@ const AdminDashboard = () => {
             <h1 className='text-3xl font-bold text-white'>{user ? (user.length) : (<p className='text-sm'>Loading</p>)}</h1>
           </div>
           <div className='flex items-center flex-col pt-3 gap-2 border  rounded-md h-22 w-25 bg-[#FD830D]'>
-            <p className='text-sm text-white font-semibold'>Total Songs</p>
-            <h1 className='text-3xl font-bold text-white'>153</h1>
+            <p className='text-sm text-white font-semibold'></p>
+            <h1 className='text-3xl font-bold text-white'></h1>
           </div>
         </div>
 
@@ -202,7 +202,7 @@ const AdminDashboard = () => {
         <div className='flex justify-center gap-5 '>
           <div className=' h-55 w-50 rounded-md  '>
             <div className=' flex flex-col  h-full w-full justify-between py-2 px-2 gap-2'>
-              <div><h1 className='text-xl font-bold text-white'>Most Played</h1></div>
+              <div><h1 className='text-xl font-bold text-white'>Best Random 4u</h1></div>
               <div className='h-42 w-45 bg-white rounded-md'>
                 <div className='w-full h-full overflow-hidden object-cover rounded-md border border-white'>
                   {songs.length > 0 && songs[random] ? (<img src={songs[random].coverImage} />) : "Loading"}
@@ -214,11 +214,11 @@ const AdminDashboard = () => {
 
 
           <div className='flex flex-col justify-center gap-5'>
-            <div className='border h-20 w-30 rounded-md border-white bg-[#aaaaaa] flex justify-center items-center'>
-              <IoAddCircleOutline onClick={handleAddSongToggle} size={60} className='text-white' />
+            <div className='border h-20 w-30 rounded-md border-white bg-white flex justify-center items-center'>
+              <IoAddCircleOutline onClick={handleAddSongToggle} size={60} className='text-green-500' />
             </div>
-            <div className='border h-20 w-30 rounded-md border-white bg-[#aaaaaa] flex justify-center items-center'>
-              <MdDelete size={60} className='text-white' />
+            <div className='border h-20 w-30 rounded-md border-white bg-white flex justify-center items-center'>
+              <MdDelete size={60} className='text-red-500' />
             </div>
           </div>
         </div>

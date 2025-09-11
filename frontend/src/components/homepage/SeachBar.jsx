@@ -3,10 +3,11 @@ import axios from 'axios'
 import React, { useEffect, useRef, useState } from 'react'
 import { FaSearch } from 'react-icons/fa'
 
-const SearchBar = ({ onSongSelect }) => {
+const SearchBar = ({ onSongSelect, currentIndex, songs = [] }) => {
     const [searchValue, setSearchValue] = useState('')
     const [results, setResults] = useState([])
     const boxRef = useRef(null)
+    const currentSong = songs[currentIndex] || {};
     const pp = "https://pulseplay-8e09.onrender.com"
     const localhost = "http://localhost:4000"
 
@@ -60,15 +61,16 @@ const SearchBar = ({ onSongSelect }) => {
             </div>
 
             {results.length > 0 && (
-                <div className="absolute top-[10vh] left-[12.5%] bg-[#1A1824] w-[75%] p-3 rounded-md text-white max-h-[200px] overflow-y-auto shadow-lg">
+                <div className="absolute top-[10vh] left-[2.%] bg-[#1A1824] w-[95%] p-3 rounded-md text-white max-h-[200px] overflow-y-auto shadow-lg border-2 border-white flex flex-col gap-2" >
                     {results.map((song) => (
-                        <p
+                        <h1
                             key={song._id}
                             onClick={() => onSongSelect(song)}  // 👈 HERE
-                            className="cursor-pointer hover:bg-gray-700 px-2 py-1"
+                            className="cursor-pointer hover:bg-gray-700 px-2 py-1 flex items-center gap-3 border-1 border-[#FD830D] rounded-md "
                         >
+                            <img src={song.coverImage} className="w-10 h-10 rounded-md object-cover border border-white"/>
                             {song.title} — {song.artist}
-                        </p>
+                        </h1>
                     ))}
                 </div>
             )}

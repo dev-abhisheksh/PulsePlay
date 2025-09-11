@@ -40,7 +40,7 @@ const ExplorePage = ({ songs, currentIndex, setCurrentIndex }) => {
   }
 
   return (
-    <div className="flex flex-col h-screen justify-between">
+    <div className="flex flex-col h-screen ">
       <div>
   
         <SearchBar onSongSelect={handleSongSelect} />
