@@ -59,21 +59,21 @@ const getPlaylist = async (req, res) => {
 };
 
 const getUsersPlaylists = async (req, res) => {
-  try {
-    const playlists = await Playlist.find({ userId: req.user._id }).populate("songs");
-    return res.json({ playlists });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Failed to fetch playlists" });
-  }
-};
+    try {
+        const playlists = await Playlist.find({ userId: req.user?._id }).populate("songs")
+        return res.json({ playlists })
+    } catch (error) {
+        console.error("Error fetching user playlists:", error);
+        return res.status(500).json({ message: "Failed to fetch playlists" });
+    }
+}
 
 const deletePlaylist = async (req, res) => {
     try {
-        const { playlistId } = req.params;
+        const { id } = req.params;
 
         const playlist = await Playlist.findOneAndDelete({
-            _id: playlistId,
+            _id: id,
             userId: req.user._id,
         });
 

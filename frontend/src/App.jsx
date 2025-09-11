@@ -10,6 +10,7 @@ import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute"
 import AdminDashboard from "./pages/AdminDashboard"
+import { ToastContainer } from "react-toastify";
 
 const App = () => {
   const [songs, setSongs] = useState([]);
@@ -20,7 +21,8 @@ const App = () => {
   const hideNav =
     location.pathname === "/login" ||
     location.pathname === "/register" ||
-    location.pathname.startsWith("/admin");
+    location.pathname.startsWith("/admin") ||
+    location.pathname.startsWith("/playlist");
 
   const hidePlayer =
     location.pathname === "/login" ||
@@ -67,11 +69,14 @@ const App = () => {
           path="/playlist"
           element={
             <ProtectedRoute>
-              <PlaylistPage
-                songs={songs}
-                currentIndex={currentIndex}
-                setCurrentIndex={setCurrentIndex}
-              />
+              <>
+                <PlaylistPage
+                  songs={songs}
+                  currentIndex={currentIndex}
+                  setCurrentIndex={setCurrentIndex}
+                />
+                <ToastContainer position="top-center" />
+              </>
             </ProtectedRoute>
           }
         />
@@ -87,16 +92,18 @@ const App = () => {
       </Routes>
 
       {/* Conditionally render PlayerBottom */}
-      {!hidePlayer && (
-        <PlayerBottom
-          songs={songs}
-          currentIndex={currentIndex}
-          setCurrentIndex={setCurrentIndex}
-          playToggle={playToggle}
-          setPlayToggle={setPlayToggle}
-        />
-      )}
-    </div>
+      {
+        !hidePlayer && (
+          <PlayerBottom
+            songs={songs}
+            currentIndex={currentIndex}
+            setCurrentIndex={setCurrentIndex}
+            playToggle={playToggle}
+            setPlayToggle={setPlayToggle}
+          />
+        )
+      }
+    </div >
   );
 };
 

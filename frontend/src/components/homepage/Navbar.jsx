@@ -36,7 +36,7 @@ const Navbar = () => {
     }, [])
 
     return (
-        <div>
+        <div className=''>
             <div className=' bg-[#1A1824] h-[11vh] w-full '>
                 <div className='flex items-center justify-between h-full px-7 py-2 font-bold'>
                     <div>

@@ -4,42 +4,45 @@ import Playlist from '../components/playlist/Playlist';
 import CreatePlaylist from '../components/playlist/CreatePlaylist';
 import PlaylistLists from '../components/playlist/PlaylistLists';
 import PlayerBottom from '../components/homepage/PlayerBottom';
+import Navbar from '../components/homepage/Navbar';
 
-const PlaylistPage = () => {
-    const [songs, setSongs] = useState([]);
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [loadingSongs, setLoadingSongs] = useState(true);
-    const [refreshPlaylists, setRefreshPlaylists] = useState(false); // to refresh playlists after creation
-    const pp = "https://pulseplay-8e09.onrender.com"
-    const localhost = "http://localhost:4000"
-
-    // Fetch songs from backend
-    useEffect(() => {
-        const fetchSongs = async () => {
-            setLoadingSongs(true);
-            try {
-                const res = await axios.get(`${pp}/api/song/songs`, { withCredentials: true });
-                setSongs(res.data.songs || []);
-            } catch (err) {
-                console.error('Failed to fetch songs:', err);
-            } finally {
-                setLoadingSongs(false);
-            }
-        };
-        fetchSongs();
-    }, []);
+const PlaylistPage = ({ songs, currentIndex, setCurrentIndex }) => {
+    const [loadingSongs, setLoadingSongs] = useState(false); // Set to false since songs come from props
+    const [refreshPlaylists, setRefreshPlaylists] = useState(false);
+    const [playToggle, setPlayToggle] = useState(false);
+    const localhost = "http://localhost:4000";
+    
 
     const refreshHandler = () => setRefreshPlaylists((prev) => !prev);
 
     if (loadingSongs) return <p className="text-white mt-4">Loading songs...</p>;
 
     return (
-        <div className="relative bg-[#1A1824] h-auto ">
-            {/* Your Playlist Section */}
-            <Playlist />
-            <CreatePlaylist refreshPlaylists={refreshHandler} />
-            <PlaylistLists refreshTrigger={refreshPlaylists} />
+        <div className="bg-[#1A1824] h-screen flex flex-col">
+            {/* Fixed Top Section */}
+            <div className="flex-shrink-0">
+                <Navbar />
+                <CreatePlaylist refreshPlaylists={refreshHandler} />
+            </div>
 
+            {/* Scrollable Playlist Section */}
+            <div className="flex-1 overflow-y-auto">
+                <PlaylistLists
+                    songs={songs}
+                    refreshTrigger={refreshPlaylists}
+                    currentIndex={currentIndex}
+                    setCurrentIndex={setCurrentIndex}
+                />
+            </div>
+            
+            {/* PlayerBottom */}
+            <PlayerBottom
+                songs={songs}
+                currentIndex={currentIndex}
+                setCurrentIndex={setCurrentIndex}
+                playToggle={playToggle}
+                setPlayToggle={setPlayToggle}
+            />
         </div>
     );
 };

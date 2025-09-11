@@ -1,18 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { MdPlaylistAddCheckCircle, MdPlaylistAddCircle } from 'react-icons/md';
 
 const Grid = ({ songs, currentIndex, setCurrentIndex }) => {
   const [playlistState, setPlaylistState] = useState({});
+  const [playlistId, setPlaylistId] = useState(null); // user's single playlist
+  const localhost = "http://localhost:4000";
+  const pp = "https://pulseplay-8e09.onrender.com"
+
+  useEffect(() => {
+    const fetchPlaylist = async () => {
+      try {
+        const res = await axios.get(`${pp}/api/playlist`, { withCredentials: true });
+        if (res.data.playlists && res.data.playlists.length > 0) {
+          const pl = res.data.playlists[0]; // only one playlist
+          setPlaylistId(pl._id);
+          const state = {};
+          pl.songs.forEach(song => {
+            state[song._id] = true; // mark songs already in playlist
+          });
+          setPlaylistState(state);
+        }
+      } catch (err) {
+        console.error("Failed to fetch playlist:", err);
+      }
+    };
+    fetchPlaylist();
+  }, []);
 
   const handlePlayClick = (index) => {
     setCurrentIndex(index);
   };
 
-  const handlePlaylistToggle = (songId) => {
-    setPlaylistState((prev) => ({
-      ...prev,
-      [songId]: !prev[songId],
-    }));
+  const handlePlaylistToggle = async (songId) => {
+    if (!playlistId) return alert("No playlist found");
+
+    try {
+      const res = await axios.post(
+        `${pp}/api/playlist/${playlistId}/add-song`,
+        { songId },
+        { withCredentials: true }
+      );
+      setPlaylistState(prev => ({
+        ...prev,
+        [songId]: !prev[songId],
+      }));
+      console.log("Song added to playlist:", res.data.playlist);
+    } catch (err) {
+      console.error("Failed to add song to playlist:", err.response?.data || err.message);
+      alert("Failed to add song to playlist");
+    }
   };
 
   if (!songs || songs.length === 0) {
@@ -22,7 +59,7 @@ const Grid = ({ songs, currentIndex, setCurrentIndex }) => {
   return (
     <div
       className="flex flex-col items-center bg-[#1A1824] p-4 gap-4 overflow-y-auto"
-      style={{ maxHeight: 'calc(9vh * 5.5 + 16px * 6.7)' }} // scroll after 5
+      style={{ maxHeight: 'calc(9vh * 5.5 + 16px * 6.7)' }}
     >
       {songs.map((song, index) => (
         <div
@@ -59,11 +96,11 @@ const Grid = ({ songs, currentIndex, setCurrentIndex }) => {
           <div
             onClick={(e) => {
               e.stopPropagation();
-              handlePlaylistToggle(song._id || index);
+              handlePlaylistToggle(song._id);
             }}
             className="flex-shrink-0"
           >
-            {playlistState[song._id || index] ? (
+            {playlistState[song._id] ? (
               <MdPlaylistAddCheckCircle size={28} className="text-green-400" />
             ) : (
               <MdPlaylistAddCircle size={28} className="text-white" />
