@@ -66,6 +66,15 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminDashboard songs={songs} />
+            </AdminRoute>
+          }
+        />
       </Routes>
 
       {/* Conditionally render PlayerBottom */}
