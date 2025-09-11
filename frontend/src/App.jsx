@@ -8,6 +8,7 @@ import PlaylistPage from "./pages/PlaylistPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminRoute from "./components/AdminRoute"
 
 const App = () => {
   const [songs, setSongs] = useState([]);
