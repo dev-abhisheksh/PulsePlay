@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FaArrowAltCircleLeft, FaPlay, FaArrowAltCircleRight, FaPause } from "react-icons/fa";
 import { MdPlaylistAddCheckCircle, MdPlaylistAddCircle, MdLoop, MdOutlineShuffle } from "react-icons/md";
+import { RiPlayListFill } from "react-icons/ri";
 
 const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggle, setPlayToggle }) => {
-    // const [playToggle, setPlayToggle] = useState(false);
+    const [playMode, setPlayMode] = useState("single"); // "single" | "playlist"
     const [duration, setDuration] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
     const [addToPlaylist, setAddToPlaylist] = useState(true);
@@ -14,18 +15,39 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
 
     const handlePlayToggle = () => setPlayToggle(!playToggle);
 
+    const handleSongEnd = () => {
+        if (!audioRef.current) return;
+
+        if (playMode === "single") {
+            // replay current song
+            audioRef.current.currentTime = 0;
+            audioRef.current.play();
+        } else if (playMode === "playlist") {
+            // go to next song in playlist
+            const nextIndex = (currentIndex + 1) % songs.length;
+            setCurrentIndex(nextIndex);
+            setPlayToggle(true);
+        }
+    };
+
     const handleNext = () => {
         if (songs.length > 0) {
-            setCurrentIndex((prev) => (prev + 1) % songs.length);
+            const nextIndex = (currentIndex + 1) % songs.length;
+            setCurrentIndex(nextIndex);
             setPlayToggle(true);
         }
     };
 
     const handlePrev = () => {
         if (songs.length > 0) {
-            setCurrentIndex((prev) => (prev - 1 + songs.length) % songs.length);
+            const prevIndex = (currentIndex - 1 + songs.length) % songs.length;
+            setCurrentIndex(prevIndex);
             setPlayToggle(true);
         }
+    };
+
+    const togglePlayMode = () => {
+        setPlayMode((prev) => (prev === "single" ? "playlist" : "single"));
     };
 
     const handlePlaylistToggle = () => setAddToPlaylist(!addToPlaylist);
@@ -70,7 +92,7 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
             <div
                 className={`
                     absolute bottom-0 left-0 right-0 bg-[#1A1824] z-10
-                    transition-all duration-500 ease-in-out
+                    transition-all duration-500 ease-in-out flex justify-center
                     ${playerExpanded ? 'translate-y-0 opacity-100 visible' : 'translate-y-full opacity-0 invisible'}
                 `}
                 style={{ height: playerExpanded ? '85vh' : '0vh' }}
@@ -85,7 +107,7 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
                     </div>
 
                     <div className='flex justify-between gap-4'>
-                        <div className='border bg-white h-[30vh] w-[50vw] rounded-md overflow-hidden'>
+                        <div className='border bg-white h-[35vh] w-[70vw] rounded-md overflow-hidden'>
                             {currentSong.coverImage ? (
                                 <img
                                     className="h-full w-full object-cover p-1 rounded-md transition-transform duration-300 hover:scale-105"
@@ -99,10 +121,19 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
                             )}
                         </div>
                         <div className='flex items-center flex-col gap-7 justify-center'>
-                            <MdLoop
-                                size={30}
-                                className='text-white hover:text-[#FD830D] cursor-pointer transition-colors duration-200'
-                            />
+                            <div onClick={togglePlayMode}>
+                                {playMode === "single" ? (
+                                    <MdLoop
+                                        size={30}
+                                        className='text-[#FD830D] hover:text-[#FD830D] cursor-pointer transition-colors duration-200'
+                                    />
+                                ) : (
+                                    <RiPlayListFill
+                                        size={28}
+                                        className='text-green-500 hover:text-[#FD830D] cursor-pointer transition-colors duration-200'
+                                    />
+                                )}
+                            </div>
                             <MdOutlineShuffle
                                 size={30}
                                 className='text-white hover:text-[#FD830D] cursor-pointer transition-colors duration-200'
@@ -110,6 +141,7 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
                         </div>
                     </div>
 
+                    {/* Song Info and Progress */}
                     <div className='flex flex-col gap-3'>
                         <div className='flex flex-col gap-2'>
                             <div onClick={handlePlaylistToggle} className='flex justify-between items-center'>
@@ -120,7 +152,7 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
                                     {addToPlaylist ? (
                                         <MdPlaylistAddCircle size={28} className='text-white cursor-pointer' />
                                     ) : (
-                                        <MdPlaylistAddCheckCircle size={28} className='text-[#FD830D] cursor-pointer' />
+                                        <MdPlaylistAddCheckCircle size={28} className='text-green-500 cursor-pointer' />
                                     )}
                                 </div>
                             </div>
@@ -156,6 +188,7 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
                         </div>
                     </div>
 
+                    {/* Controls */}
                     <div className='flex justify-center gap-20'>
                         <div className='flex gap-15 items-center'>
                             <FaArrowAltCircleLeft
@@ -231,7 +264,12 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
 
             {/* Hidden Audio */}
             {currentSong.audioUrl && (
-                <audio ref={audioRef} src={currentSong.audioUrl} preload="metadata" />
+                <audio
+                    ref={audioRef}
+                    src={currentSong.audioUrl}
+                    preload="metadata"
+                    onEnded={handleSongEnd}
+                />
             )}
         </div>
     );

@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdRefresh } from "react-icons/md";
+import { RiRefreshFill } from "react-icons/ri";
+// import { RiRefreshFill } from "react-icons/ri";
 
 const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs }) => {
     const [playlists, setPlaylists] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [suffleOn, setSuffleOn] = useState(false)
     const localhost = "http://localhost:4000";
     const pp = "https://pulseplay-8e09.onrender.com"
 
@@ -16,7 +19,6 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs })
         } else {
         }
     };
-
 
     const isCurrentlyPlaying = (songId) => {
         if (!songs[currentIndex]) return false;
@@ -36,6 +38,10 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs })
             setLoading(false);
         }
     };
+
+
+const handleSuffle=(()=>setSuffleOn(!suffleOn))
+
 
     const deletePlaylist = (playlistId) => {
         toast.info(
@@ -86,7 +92,7 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs })
                     onClick={fetchPlaylists}
                     className="px-4 py-2 bg-[#FD830D] hover:bg-[#FD830D] text-white rounded-lg font-semibold transition"
                 >
-                    Refresh
+                    <MdRefresh size={25} />
                 </button>
             </div>
 
@@ -103,15 +109,26 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs })
                                 <h3 className="font-semibold text-lg">
                                     {playlist.name} ({playlist.songs.length} songs)
                                 </h3>
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        deletePlaylist(playlist._id);
-                                    }}
-                                    className="ml-4 px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm flex items-center justify-center"
-                                >
-                                    <MdDelete />
-                                </button>
+                                <div className="flex ">
+                                    <button
+                                       onClick={handleSuffle}
+                                        className={`ml-4 px-3 py-1  rounded-md text-sm flex items-center justify-center 
+                                            ${suffleOn ? "bg-green-500" : "bg-white text-black"}`}
+
+                                    >
+                                        <RiRefreshFill size={20} />
+                                    </button>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            deletePlaylist(playlist._id);
+                                        }}
+                                        className="ml-4 px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm flex items-center justify-center"
+                                    >
+                                        <MdDelete size={20} />
+                                    </button>
+                                </div>
+
                             </div>
 
                             <div className="mt-2 ml-2 flex flex-col gap-1">
