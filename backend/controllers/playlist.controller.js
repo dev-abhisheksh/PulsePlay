@@ -41,6 +41,32 @@ const addSongToPlaylist = async (req, res) => {
     }
 };
 
+const removeSongFromPlaylist = async (req, res) => {
+    try {
+        const { playlistId } = req.params;
+        const { songId } = req.body;
+
+        const playlist = await Playlist.findByIdAndUpdate(
+            playlistId,
+            { $pull: { songs: songId } }, // remove song
+            { new: true }
+        ).populate("songs");
+
+        if (!playlist) {
+            return res.status(404).json({ message: "Playlist not found" });
+        }
+
+        return res.json({
+            message: "Song removed from playlist",
+            playlist,
+        });
+    } catch (error) {
+        console.error("Error removing song from playlist:", error);
+        return res.status(500).json({ message: "Failed to remove song from playlist" });
+    }
+};
+
+
 // controllers/playlist.controller.js
 const getPlaylist = async (req, res) => {
     try {
@@ -156,5 +182,6 @@ export {
     getUsersPlaylists,
     deletePlaylist,
     renamePlaylist,
-    reorderSongsInPlaylist
+    reorderSongsInPlaylist,
+    removeSongFromPlaylist
 };

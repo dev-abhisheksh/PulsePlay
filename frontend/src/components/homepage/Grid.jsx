@@ -1,22 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { MdPlaylistAddCheckCircle, MdPlaylistAddCircle } from 'react-icons/md';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { MdPlaylistAddCheckCircle, MdPlaylistAddCircle } from "react-icons/md";
 
 const Grid = ({ songs, currentIndex, setCurrentIndex }) => {
   const [playlistState, setPlaylistState] = useState({});
-  const [playlistId, setPlaylistId] = useState(null); // user's single playlist
+  const [playlistId, setPlaylistId] = useState(null);
   const localhost = "http://localhost:4000";
-  const pp = "https://pulseplay-8e09.onrender.com"
 
   useEffect(() => {
     const fetchPlaylist = async () => {
       try {
-        const res = await axios.get(`${pp}/api/playlist`, { withCredentials: true });
+        const res = await axios.get(`${pp}/api/playlist`, {
+          withCredentials: true,
+        });
         if (res.data.playlists && res.data.playlists.length > 0) {
           const pl = res.data.playlists[0]; // only one playlist
           setPlaylistId(pl._id);
           const state = {};
-          pl.songs.forEach(song => {
+          pl.songs.forEach((song) => {
             state[song._id] = true; // mark songs already in playlist
           });
           setPlaylistState(state);
@@ -32,23 +33,31 @@ const Grid = ({ songs, currentIndex, setCurrentIndex }) => {
     setCurrentIndex(index);
   };
 
-  const handlePlaylistToggle = async (songId) => {
-    if (!playlistId) return alert("No playlist found");
-
+  const handleAddSong = async (songId) => {
     try {
       const res = await axios.post(
         `${pp}/api/playlist/${playlistId}/add-song`,
         { songId },
         { withCredentials: true }
       );
-      setPlaylistState(prev => ({
-        ...prev,
-        [songId]: !prev[songId],
-      }));
-      console.log("Song added to playlist:", res.data.playlist);
+      setPlaylistState((prev) => ({ ...prev, [songId]: true }));
+      console.log("Song added:", res.data.playlist);
     } catch (err) {
-      console.error("Failed to add song to playlist:", err.response?.data || err.message);
-      alert("Failed to add song to playlist");
+      console.error("Failed to add song:", err.response?.data || err.message);
+    }
+  };
+
+  const handleRemoveSong = async (songId) => {
+    try {
+      const res = await axios.patch(
+        `${pp}/api/playlist/${playlistId}/remove-song`,
+        { songId },
+        { withCredentials: true }
+      );
+      setPlaylistState((prev) => ({ ...prev, [songId]: false }));
+      console.log("Song removed:", res.data.playlist);
+    } catch (err) {
+      console.error("Failed to remove song:", err.response?.data || err.message);
     }
   };
 
@@ -59,14 +68,14 @@ const Grid = ({ songs, currentIndex, setCurrentIndex }) => {
   return (
     <div
       className="flex flex-col items-center bg-[#1A1824] p-4 gap-4 overflow-y-auto"
-      style={{ maxHeight: 'calc(9vh * 5.5 + 16px * 6.7)' }}
+      style={{ maxHeight: "calc(9vh * 5.5 + 16px * 6.7)" }}
     >
       {songs.map((song, index) => (
         <div
           key={song._id || index}
           onClick={() => handlePlayClick(index)}
           className={`w-[95%] flex items-center justify-between px-2 h-[9vh] cursor-pointer
-            ${index === currentIndex ? 'bg-[#2a2738] rounded-md' : ''}`}
+          ${index === currentIndex ? "bg-[#2a2738] rounded-md" : ""}`}
         >
           {/* Left: Cover + Text */}
           <div className="flex gap-5 items-center overflow-hidden">
@@ -92,11 +101,15 @@ const Grid = ({ songs, currentIndex, setCurrentIndex }) => {
             </div>
           </div>
 
-          {/* Right: Playlist icon */}
+          {/* Right: Playlist toggle */}
           <div
             onClick={(e) => {
               e.stopPropagation();
-              handlePlaylistToggle(song._id);
+              if (playlistState[song._id]) {
+                handleRemoveSong(song._id);
+              } else {
+                handleAddSong(song._id);
+              }
             }}
             className="flex-shrink-0"
           >
