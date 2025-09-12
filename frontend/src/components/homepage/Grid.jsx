@@ -6,6 +6,7 @@ const Grid = ({ songs, currentIndex, setCurrentIndex }) => {
   const [playlistState, setPlaylistState] = useState({});
   const [playlistId, setPlaylistId] = useState(null);
   const localhost = "http://localhost:4000";
+   const pp = "https://pulseplay-8e09.onrender.com"
 
   useEffect(() => {
     const fetchPlaylist = async () => {
