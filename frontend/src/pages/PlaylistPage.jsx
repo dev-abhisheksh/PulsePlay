@@ -11,7 +11,7 @@ const PlaylistPage = ({ songs, currentIndex, setCurrentIndex }) => {
     const [refreshPlaylists, setRefreshPlaylists] = useState(false);
     const [playToggle, setPlayToggle] = useState(false);
     const localhost = "http://localhost:4000";
-    
+
 
     const refreshHandler = () => setRefreshPlaylists((prev) => !prev);
 
@@ -28,13 +28,13 @@ const PlaylistPage = ({ songs, currentIndex, setCurrentIndex }) => {
             {/* Scrollable Playlist Section */}
             <div className="flex-1 overflow-y-auto">
                 <PlaylistLists
-                    songs={songs}
+                    songs={songs.filter(song => !song.hidden)}
                     refreshTrigger={refreshPlaylists}
                     currentIndex={currentIndex}
                     setCurrentIndex={setCurrentIndex}
                 />
             </div>
-            
+
             {/* PlayerBottom */}
             <PlayerBottom
                 songs={songs}

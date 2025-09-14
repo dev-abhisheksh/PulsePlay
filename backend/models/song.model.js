@@ -20,7 +20,8 @@ const songSchema = mongoose.Schema({
     },
     coverImage: {
         type: String //cloudinary
-    }
+    },
+    hidden: { type: Boolean, default: false }
 }, { timestamps: true })
 
 songSchema.index({ title: 'text', artist: 'text', genre: 'text' }) //gonna be used for searhign

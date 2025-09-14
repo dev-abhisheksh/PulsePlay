@@ -42,15 +42,15 @@ const ExplorePage = ({ songs, currentIndex, setCurrentIndex }) => {
   return (
     <div className="flex flex-col h-screen ">
       <div>
-  
+
         <SearchBar onSongSelect={handleSongSelect} />
       </div>
       <Grid
-        songs={songs}
+        songs={songs.filter(song => !song.hidden)}
         currentIndex={currentIndex}
         setCurrentIndex={setCurrentIndex}
       />
-     
+
     </div>
   )
 }

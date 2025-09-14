@@ -108,7 +108,7 @@ const usersCount = async (req, res) => {
     try {
         // This should fetch ALL users, not just req.user
         const users = await User.find({})  // Get ALL users
-        console.log("All users found:", users.length)
+        // console.log("All users found:", users.length)
         res.json(users)
     } catch (error) {
         console.log("Error:", error)

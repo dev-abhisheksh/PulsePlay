@@ -72,9 +72,67 @@ const searchSongs = async (req, res) => {
     }
 };
 
+// Hide one song
+const hideSong = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const song = await Song.findByIdAndUpdate(
+            id, 
+            { hidden: true }, 
+            { new: true }
+        );
+        if (!song) return res.status(404).json({ message: "Song not found" });
+        return res.json({ message: "Song hidden successfully", song });
+    } catch (error) {
+        return res.status(500).json({ message: "Failed to hide song" });
+    }
+};
+
+// Unhide one song
+const unhideSong = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const song = await Song.findByIdAndUpdate(
+            id, 
+            { hidden: false }, 
+            { new: true }
+        );
+        if (!song) return res.status(404).json({ message: "Song not found" });
+        return res.json({ message: "Song unhidden successfully", song });
+    } catch (error) {
+        return res.status(500).json({ message: "Failed to unhide song" });
+    }
+};
+
+// Hide or unhide multiple songs at once
+const hideMultipleSongs = async (req, res) => {
+    const { ids, hidden } = req.body; // hidden: true to hide, false to unhide
+    try {
+        if (!ids || !Array.isArray(ids)) {
+            return res.status(400).json({ message: "Invalid IDs array" });
+        }
+
+        await Song.updateMany(
+            { _id: { $in: ids } }, 
+            { $set: { hidden } }
+        );
+
+        return res.json({
+            message: hidden 
+                ? "Songs hidden successfully" 
+                : "Songs unhidden successfully"
+        });
+    } catch (error) {
+        return res.status(500).json({ message: "Failed to update songs" });
+    }
+};
+
 
 export {
     addSong,
     getSongs,
-    searchSongs
+    searchSongs,
+    hideMultipleSongs,
+    hideSong,
+    unhideSong
 }

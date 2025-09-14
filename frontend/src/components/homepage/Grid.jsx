@@ -19,7 +19,7 @@ const Grid = ({ songs, currentIndex, setCurrentIndex }) => {
           setPlaylistId(pl._id);
           const state = {};
           pl.songs.forEach((song) => {
-            state[song._id] = true; // mark songs already in playlist
+            state[song._id] = true;
           });
           setPlaylistState(state);
         }

@@ -71,7 +71,8 @@ const App = () => {
             <ProtectedRoute>
               <>
                 <PlaylistPage
-                  songs={songs}
+                   songs={songs}
+                   setSongs={setSongs}
                   currentIndex={currentIndex}
                   setCurrentIndex={setCurrentIndex}
                 />
@@ -85,7 +86,7 @@ const App = () => {
           path="/admin"
           element={
             <AdminRoute>
-              <AdminDashboard songs={songs} />
+              <AdminDashboard songs={songs} setSongs={setSongs} />
             </AdminRoute>
           }
         />

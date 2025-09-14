@@ -3,9 +3,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { MdDelete, MdRefresh } from "react-icons/md";
 import { RiRefreshFill } from "react-icons/ri";
-// import { RiRefreshFill } from "react-icons/ri";
 
-const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs }) => {
+const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, setSongs }) => {
     const [playlists, setPlaylists] = useState([]);
     const [loading, setLoading] = useState(true);
     const [suffleOn, setSuffleOn] = useState(false)
@@ -31,7 +30,14 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs })
             const res = await axios.get(`${pp}/api/playlist`, {
                 withCredentials: true,
             });
-            setPlaylists(res.data.playlists);
+            
+            // Filter out hidden songs from each playlist
+            const filteredPlaylists = res.data.playlists.map(playlist => ({
+                ...playlist,
+                songs: playlist.songs.filter(song => !song.hidden)
+            }));
+            
+            setPlaylists(filteredPlaylists);
         } catch (error) {
             console.error("Failed to fetch playlists", error);
         } finally {
@@ -39,9 +45,7 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs })
         }
     };
 
-
-const handleSuffle=(()=>setSuffleOn(!suffleOn))
-
+    const handleSuffle = (() => setSuffleOn(!suffleOn))
 
     const deletePlaylist = (playlistId) => {
         toast.info(
@@ -185,8 +189,6 @@ const handleSuffle=(()=>setSuffleOn(!suffleOn))
                                                     {song.artist || "Unknown"}
                                                 </p>
                                             </div>
-
-
                                         </div>
                                     ))
                                 )}

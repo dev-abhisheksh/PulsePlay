@@ -4,7 +4,7 @@ import { MdPlaylistAddCheckCircle, MdPlaylistAddCircle, MdLoop, MdOutlineShuffle
 import { RiPlayListFill } from "react-icons/ri";
 
 const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggle, setPlayToggle }) => {
-    const [playMode, setPlayMode] = useState("single"); // "single" | "playlist"
+    const [playMode, setPlayMode] = useState("playlist"); // "single" | "playlist"
     const [duration, setDuration] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
     const [addToPlaylist, setAddToPlaylist] = useState(true);
