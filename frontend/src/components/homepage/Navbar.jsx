@@ -22,7 +22,7 @@ const Navbar = () => {
 
     useEffect(() => {
         const fetchUsers = async () => {
-            const res = await axios.get(`${localhost}/api/verify`, { withCredentials: true })
+            const res = await axios.get(`${pp}/api/verify`, { withCredentials: true })
             const userData = res.data.user;
             setUser(userData)
             if (userData && userData.role === "admin") {
