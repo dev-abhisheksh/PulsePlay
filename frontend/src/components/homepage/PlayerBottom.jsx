@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { FaArrowAltCircleLeft, FaPlay, FaArrowAltCircleRight, FaPause } from "react-icons/fa";
 import { MdPlaylistAddCheckCircle, MdPlaylistAddCircle, MdLoop, MdOutlineShuffle } from "react-icons/md";
 import { RiPlayListFill } from "react-icons/ri";
+
 
 const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggle, setPlayToggle }) => {
     const [playMode, setPlayMode] = useState("playlist"); // "single" | "playlist"
@@ -11,7 +12,26 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
     const [playerExpanded, setPlayerExpanded] = useState(false);
     const audioRef = useRef(null);
 
-    const currentSong = songs[currentIndex] || {};
+    // Filter out hidden songs and memoize the result
+    const visibleSongs = useMemo(() => {
+        return songs.filter(song => !song.hidden);
+    }, [songs]);
+
+    // Adjust currentIndex to work with filtered songs
+    const adjustedCurrentIndex = useMemo(() => {
+        if (visibleSongs.length === 0) return 0;
+        
+        // Find the current song in the visible songs array
+        const currentSong = songs[currentIndex];
+        if (!currentSong || currentSong.hidden) {
+            return 0; // Default to first visible song if current is hidden
+        }
+        
+        const visibleIndex = visibleSongs.findIndex(song => song._id === currentSong._id);
+        return visibleIndex >= 0 ? visibleIndex : 0;
+    }, [visibleSongs, songs, currentIndex]);
+
+    const currentSong = visibleSongs[adjustedCurrentIndex] || {};
 
     const handlePlayToggle = () => setPlayToggle(!playToggle);
 
@@ -24,24 +44,33 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
             audioRef.current.play();
         } else if (playMode === "playlist") {
             // go to next song in playlist
-            const nextIndex = (currentIndex + 1) % songs.length;
-            setCurrentIndex(nextIndex);
+            const nextIndex = (adjustedCurrentIndex + 1) % visibleSongs.length;
+            const nextSong = visibleSongs[nextIndex];
+            // Find the original index of the next song
+            const originalIndex = songs.findIndex(song => song._id === nextSong._id);
+            setCurrentIndex(originalIndex);
             setPlayToggle(true);
         }
     };
 
     const handleNext = () => {
-        if (songs.length > 0) {
-            const nextIndex = (currentIndex + 1) % songs.length;
-            setCurrentIndex(nextIndex);
+        if (visibleSongs.length > 0) {
+            const nextIndex = (adjustedCurrentIndex + 1) % visibleSongs.length;
+            const nextSong = visibleSongs[nextIndex];
+            // Find the original index of the next song
+            const originalIndex = songs.findIndex(song => song._id === nextSong._id);
+            setCurrentIndex(originalIndex);
             setPlayToggle(true);
         }
     };
 
     const handlePrev = () => {
-        if (songs.length > 0) {
-            const prevIndex = (currentIndex - 1 + songs.length) % songs.length;
-            setCurrentIndex(prevIndex);
+        if (visibleSongs.length > 0) {
+            const prevIndex = (adjustedCurrentIndex - 1 + visibleSongs.length) % visibleSongs.length;
+            const prevSong = visibleSongs[prevIndex];
+            // Find the original index of the previous song
+            const originalIndex = songs.findIndex(song => song._id === prevSong._id);
+            setCurrentIndex(originalIndex);
             setPlayToggle(true);
         }
     };
@@ -85,6 +114,11 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
     }, [playToggle, currentSong]);
 
     const progress = duration ? (currentTime / duration) * 100 : 0;
+
+    // Don't render if no visible songs
+    if (visibleSongs.length === 0) {
+        return null;
+    }
 
     return (
         <div className='fixed bottom-0 left-0 w-full z- bg-[#1A1824]"'>

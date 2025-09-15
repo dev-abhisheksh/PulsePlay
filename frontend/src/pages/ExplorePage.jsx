@@ -12,8 +12,8 @@ const ExplorePage = ({ songs, currentIndex, setCurrentIndex }) => {
   const [searchResults, setSearchResults] = useState([])
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
-  const pp = "https://pulseplay-8e09.onrender.com"
-  const localhost = "http://localhost:4000"
+  const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
+  
 
 
 

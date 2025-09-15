@@ -5,11 +5,10 @@ import { MdPlaylistAddCheckCircle, MdPlaylistAddCircle } from "react-icons/md";
 const Grid = ({ songs, currentIndex, setCurrentIndex }) => {
   const [playlistState, setPlaylistState] = useState({});
   const [playlistId, setPlaylistId] = useState(null);
-  const localhost = "http://localhost:4000";
-   const pp = "https://pulseplay-8e09.onrender.com"
+   const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
 
   useEffect(() => {
-    const fetchPlaylist = async () => {
+    const fetchPlaylist = async () => {s
       try {
         const res = await axios.get(`${pp}/api/playlist`, {
           withCredentials: true,

@@ -8,8 +8,7 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, s
     const [playlists, setPlaylists] = useState([]);
     const [loading, setLoading] = useState(true);
     const [suffleOn, setSuffleOn] = useState(false)
-    const localhost = "http://localhost:4000";
-    const pp = "https://pulseplay-8e09.onrender.com"
+    const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
 
     const handlePlayClick = (songId) => {
         const globalIndex = songs.findIndex((s) => s._id === songId);
@@ -30,13 +29,13 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, s
             const res = await axios.get(`${pp}/api/playlist`, {
                 withCredentials: true,
             });
-            
+
             // Filter out hidden songs from each playlist
             const filteredPlaylists = res.data.playlists.map(playlist => ({
                 ...playlist,
                 songs: playlist.songs.filter(song => !song.hidden)
             }));
-            
+
             setPlaylists(filteredPlaylists);
         } catch (error) {
             console.error("Failed to fetch playlists", error);
@@ -115,7 +114,7 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, s
                                 </h3>
                                 <div className="flex ">
                                     <button
-                                       onClick={handleSuffle}
+                                        onClick={handleSuffle}
                                         className={`ml-4 px-3 py-1  rounded-md text-sm flex items-center justify-center 
                                             ${suffleOn ? "bg-green-500" : "bg-white text-black"}`}
 

@@ -42,7 +42,7 @@ const verifyUser = async (req, res, next) => {
 // middleware/verifyAdmin.js
 const verifyAdmin = (req, res, next) => {
     if (req.user && req.user.role === "admin") {
-        console.log("Is admin")
+        // console.log("Is admin")
         next();
     } else {
         return res.status(403).json({ message: "Access denied: Admins only" });

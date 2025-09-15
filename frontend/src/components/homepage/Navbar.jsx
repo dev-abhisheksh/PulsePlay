@@ -12,8 +12,7 @@ const Navbar = () => {
     const [user, setUser] = useState(null)
     const navigate = useNavigate()
     const [isAdmin, setIsAdmin] = useState(false)
-    const pp = "https://pulseplay-8e09.onrender.com"
-    const localhost = "http://localhost:4000"
+   const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
 
     const handleLogout = async () => {
         await axios.get(`${pp}/api/logout`, { withCredentials: true })
@@ -23,7 +22,7 @@ const Navbar = () => {
 
     useEffect(() => {
         const fetchUsers = async () => {
-            const res = await axios.get(`${pp}/api/verify`, { withCredentials: true })
+            const res = await axios.get(`${localhost}/api/verify`, { withCredentials: true })
             const userData = res.data.user;
             setUser(userData)
             if (userData && userData.role === "admin") {
