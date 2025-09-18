@@ -54,7 +54,7 @@ const searchSongs = async (req, res) => {
         const skip = (page - 1) * limit;
 
         const songs = await Song.find(query)
-            .sort({ createdAt: -1 }) 
+            .sort({ createdAt: -1 })
             .skip(skip)
             .limit(Number(limit));
 
@@ -77,8 +77,8 @@ const hideSong = async (req, res) => {
     const { id } = req.params;
     try {
         const song = await Song.findByIdAndUpdate(
-            id, 
-            { hidden: true }, 
+            id,
+            { hidden: true },
             { new: true }
         );
         if (!song) return res.status(404).json({ message: "Song not found" });
@@ -93,8 +93,8 @@ const unhideSong = async (req, res) => {
     const { id } = req.params;
     try {
         const song = await Song.findByIdAndUpdate(
-            id, 
-            { hidden: false }, 
+            id,
+            { hidden: false },
             { new: true }
         );
         if (!song) return res.status(404).json({ message: "Song not found" });
@@ -113,19 +113,58 @@ const hideMultipleSongs = async (req, res) => {
         }
 
         await Song.updateMany(
-            { _id: { $in: ids } }, 
+            { _id: { $in: ids } },
             { $set: { hidden } }
         );
 
         return res.json({
-            message: hidden 
-                ? "Songs hidden successfully" 
+            message: hidden
+                ? "Songs hidden successfully"
                 : "Songs unhidden successfully"
         });
     } catch (error) {
         return res.status(500).json({ message: "Failed to update songs" });
     }
 };
+
+const editSong = async (req, res) => {
+    const { id } = req.params;
+
+    const { title, artist, genre } = req.body || {}; // avoid destructuring undefined
+
+    const updateData = {};
+    if (title) updateData.title = title;
+    if (artist) updateData.artist = artist;
+    if (genre) updateData.genre = genre;
+
+    try {
+        if (req.files?.coverImage) {
+            const coverUpload = await streamUpload(req.files.coverImage[0].buffer, "image");
+            updateData.coverImage = coverUpload.secure_url;
+        }
+        if (req.files?.audio) {
+            const audioUpload = await streamUpload(req.files.audio[0].buffer, "video");
+            updateData.audioUrl = audioUpload.secure_url;
+        }
+
+        if (Object.keys(updateData).length === 0) {
+            return res.status(400).json({ message: "At least one field is required to update" });
+        }
+
+        const updatedSong = await Song.findByIdAndUpdate(id, { $set: updateData }, { new: true });
+        if (!updatedSong) return res.status(404).json({ message: "Song not found" });
+
+        res.status(200).json({ message: "Song updated successfully", song: updatedSong });
+    } catch (err) {
+        console.error("Error editing song:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+
+
+
+
 
 
 export {
@@ -134,5 +173,6 @@ export {
     searchSongs,
     hideMultipleSongs,
     hideSong,
-    unhideSong
+    unhideSong,
+    editSong
 }

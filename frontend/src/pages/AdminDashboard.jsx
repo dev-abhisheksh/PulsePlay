@@ -1,11 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { FaAlignJustify, FaAlignRight, FaHome, FaSearch, FaMusic, FaDownload, FaEye, FaEyeSlash } from "react-icons/fa";
+import { TiEdit } from "react-icons/ti";
 import { Link } from 'react-router-dom';
 import { IoAddCircleOutline } from "react-icons/io5";
-import { MdDelete } from "react-icons/md";
+import { MdOutlineSettingsSuggest } from "react-icons/md";
+
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+
 
 const AdminDashboard = ({ songs, setSongs }) => {
   const [menuBarToggle, setMenuBarToggle] = useState(true);
@@ -19,8 +22,49 @@ const AdminDashboard = ({ songs, setSongs }) => {
   const [uploading, setUploading] = useState(false);
   const [username, setUsername] = useState();
   const navigate = useNavigate();
+  const [currentEditSong, setCurrentEditSong] = useState(null);
+  const [editSongModal, setEditSongModal] = useState(false)
+
   const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
-  
+
+  // Open modal and select song
+  const openEditModal = (song) => {
+    setCurrentEditSong(song);
+    setEditSongModal(true);
+  };
+
+  // Submit edit
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    if (!currentEditSong) return;
+
+    const formData = new FormData();
+    if (currentEditSong.title) formData.append("title", currentEditSong.title);
+    if (currentEditSong.artist) formData.append("artist", currentEditSong.artist);
+    if (currentEditSong.genre) formData.append("genre", currentEditSong.genre);
+    if (coverRef.current.files[0]) formData.append("coverImage", coverRef.current.files[0]);
+    if (audioRef.current.files[0]) formData.append("audio", audioRef.current.files[0]);
+
+
+    try {
+      await axios.patch(`${pp}/api/song/${currentEditSong._id}/edit-song`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
+
+      toast.success("Song updated successfully!");
+      setEditSongModal(false);
+      setCurrentEditSong(null);
+
+      const res = await axios.get(`${pp}/api/song/songs`);
+      setSongs(res.data.songs);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update song");
+    }
+  };
+
+
 
   const handleSongVisibility = async (songId, currentlyHidden) => {
     try {
@@ -63,7 +107,7 @@ const AdminDashboard = ({ songs, setSongs }) => {
   };
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchUsersCount = async () => {
       try {
         const res = await axios.get(`${pp}/api/all-users`, { withCredentials: true });
         setUser(res.data);
@@ -71,7 +115,7 @@ const AdminDashboard = ({ songs, setSongs }) => {
         console.error(error);
       }
     };
-    fetchUsers();
+    fetchUsersCount();
   }, []);
 
   const handleAddSongToggle = () => {
@@ -213,11 +257,90 @@ const AdminDashboard = ({ songs, setSongs }) => {
             <div className='border h-20 w-30 rounded-md border-white bg-white flex justify-center items-center'>
               <IoAddCircleOutline onClick={handleAddSongToggle} size={60} className='text-green-500' />
             </div>
-            <div className='border h-20 w-30 rounded-md border-white bg-white flex justify-center items-center'>
-              <MdDelete size={60} className='text-red-500' />
-            </div>
+            {songs.length > 0 && (
+              <div className='border h-20 w-30 rounded-md border-white bg-white flex justify-center items-center'>
+                <MdOutlineSettingsSuggest
+                  size={60}
+                  className='text-red-500 cursor-pointer'
+                  onClick={() => openEditModal(songs[0])} // Or pass the song you want
+                />
+              </div>
+            )}
+
           </div>
         </div>
+
+        {editSongModal && currentEditSong && (
+          <div className="fixed inset-0 flex justify-center items-center z-40">
+            <div
+              className="absolute inset-0 bg-black bg-opacity-50"
+              onClick={() => setEditSongModal(false)}
+            ></div>
+            <div className="relative bg-white rounded-md p-6 w-96 z-50">
+              <h1>Edit Song</h1>
+              <form onSubmit={handleEditSubmit} className="flex flex-col gap-3">
+                <div className="flex flex-col">
+                  <label>Title</label>
+                  <input
+                    type="text"
+                    value={currentEditSong.title}
+                    onChange={(e) =>
+                      setCurrentEditSong({ ...currentEditSong, title: e.target.value })
+                    }
+                    className="border rounded px-2 py-1"
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-col">
+                  <label>Artist</label>
+                  <input
+                    type="text"
+                    value={currentEditSong.artist}
+                    onChange={(e) =>
+                      setCurrentEditSong({ ...currentEditSong, artist: e.target.value })
+                    }
+                    className="border rounded px-2 py-1"
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-col">
+                  <label>Genre</label>
+                  <input
+                    type="text"
+                    value={currentEditSong.genre}
+                    onChange={(e) =>
+                      setCurrentEditSong({ ...currentEditSong, genre: e.target.value })
+                    }
+                    className="border rounded px-2 py-1"
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-col">
+                  <label>Cover Image</label>
+                  <input ref={coverRef} type="file" accept="image/*" />
+                </div>
+
+                <div className="flex flex-col">
+                  <label>Audio File</label>
+                  <input ref={audioRef} type="file" accept="audio/*" />
+                </div>
+
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+                >
+                  Update
+                </button>
+              </form>
+
+
+            </div>
+          </div>
+        )}
+
 
         {/* Upload Modal */}
         {addSongToggle && (
@@ -258,15 +381,36 @@ const AdminDashboard = ({ songs, setSongs }) => {
             <h1 className='text-white font-bold text-2xl pt-3'>Song Management</h1>
             <div className='flex flex-col gap-3 pb-3'>
               {songs.map((song) => (
-                <div key={song._id} className='flex justify-between gap-10 border border-white rounded items-center px-2 py-1 bg-[#444445]'>
+                <div
+                  key={song._id}
+                  className="flex justify-between gap-10 border border-white rounded items-center px-2 py-1 bg-[#444445]"
+                >
                   <p className="text-white text-lg">{song.title}</p>
-                  {song.hidden ? (
-                    <FaEyeSlash className="text-red-400 cursor-pointer" onClick={() => handleSongVisibility(song._id, true)} />
-                  ) : (
-                    <FaEye className="text-green-400 cursor-pointer" onClick={() => handleSongVisibility(song._id, false)} />
-                  )}
+
+                  <div className="flex gap-3">
+                    {song.hidden ? (
+                      <FaEyeSlash
+                        className="text-red-400 cursor-pointer"
+                        onClick={() => handleSongVisibility(song._id, true)}
+                      />
+                    ) : (
+                      <FaEye
+                        className="text-green-400 cursor-pointer"
+                        onClick={() => handleSongVisibility(song._id, false)}
+                      />
+                    )}
+
+                    {/* Edit Button */}
+                    <button
+                      className="bg-blue-500 text-white px-2 py-1 rounded"
+                      onClick={() => openEditModal(song)}
+                    >
+                      Edit
+                    </button>
+                  </div>
                 </div>
               ))}
+
             </div>
           </div>
         </div>

@@ -8,7 +8,7 @@ const SearchBar = ({ onSongSelect, currentIndex, songs = [] }) => {
     const [results, setResults] = useState([])
     const boxRef = useRef(null)
     const currentSong = songs[currentIndex] || {};
-  const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
+    const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
 
     useEffect(() => {
         if (!searchValue.trim()) {
@@ -60,7 +60,7 @@ const SearchBar = ({ onSongSelect, currentIndex, songs = [] }) => {
             </div>
 
             {results.length > 0 && (
-                <div className="absolute top-[10vh] left-[2.%] bg-[#1A1824] w-[95%] p-3 rounded-md text-white max-h-[200px] overflow-y-auto shadow-lg border-2 border-white flex flex-col gap-2" >
+                <div className="absolute top-[10vh] left-[2.%] bg-[#494848] w-[95%] p-3 rounded-md text-white max-h-[200px] overflow-y-auto shadow-lg border-2 border-white flex flex-col gap-2" >
                     {results.map((song) => (
                         <h1
                             key={song._id}

@@ -121,22 +121,22 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
     }
 
     return (
-        <div className='fixed bottom-0 left-0 w-full z- bg-[#1A1824]"'>
+        <div className='fixed bottom-0 left-0 w-full z- bg-[#1A1824] '>
             {/* Expanded Player */}
             <div
                 className={`
                     absolute bottom-0 left-0 right-0 bg-[#1A1824] z-10
-                    transition-all duration-500 ease-in-out flex justify-center
+                    transition-all duration-500 ease-in-out flex justify-center border-t-3 border-white
                     ${playerExpanded ? 'translate-y-0 opacity-100 visible' : 'translate-y-full opacity-0 invisible'}
                 `}
                 style={{ height: playerExpanded ? '85vh' : '0vh' }}
             >
-                <div className='flex justify-between flex-col pt-5 pb-10 h-full px-3'>
+                <div className='flex justify-between flex-col pt-5 pb-10 h-full px-3 border-white'>
                     {/* Close Button */}
                     <div className='flex justify-center mb-2'>
                         <div
                             onClick={() => setPlayerExpanded(false)}
-                            className='w-10 h-1 bg-gray-400 rounded-full cursor-pointer hover:bg-gray-300 transition-colors'
+                            className='w-12 h-1 bg-gray-400 rounded-full cursor-pointer hover:bg-gray-300 transition-colors'
                         />
                     </div>
 

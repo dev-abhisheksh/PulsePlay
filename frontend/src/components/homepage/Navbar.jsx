@@ -12,7 +12,7 @@ const Navbar = () => {
     const [user, setUser] = useState(null)
     const navigate = useNavigate()
     const [isAdmin, setIsAdmin] = useState(false)
-   const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
+    const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
 
     const handleLogout = async () => {
         await axios.get(`${pp}/api/logout`, { withCredentials: true })
@@ -40,7 +40,7 @@ const Navbar = () => {
             <div className=' bg-[#1A1824] h-[11vh] w-full '>
                 <div className='flex items-center justify-between h-full px-7 py-2 font-bold'>
                     <div>
-                        <h1 className='flex text-white text-2xl font-bold'>PulsePlay&nbsp; {isAdmin ? (<div className='text-red-500'> Admin</div>): ""}</h1>
+                        <h1 className='flex text-white text-2xl font-bold'>PulsePlay&nbsp; {isAdmin ? (<div className='text-red-500'> Admin</div>) : ""}</h1>
                     </div>
                     <div onClick={() => setMenuBarToggle(!menuBarToggle)} className="relative w-6 h-6 cursor-pointer">
                         {menuBarToggle ? (<FaAlignJustify size={24} className='text-white' />) : <FaAlignRight size={24} className='text-white' />}
@@ -52,7 +52,7 @@ const Navbar = () => {
                 className={`fixed top-0 left-0 h-full w-[75%] border-r-2 flex flex-col gap-10 border-white bg-black bg-opacity-40 transform transition-transform duration-500 ease-in-out z-40
                     ${menuBarToggle ? "-translate-x-full" : "translate-x-0"}`}
             >
-                <h2 className="pl-7 pt-5 flex text-white text-2xl font-bold">PulsePlay&nbsp; {isAdmin ? (<div className='text-red-500'> Admin</div>): ""}</h2>
+                <h2 className="pl-7 pt-5 flex text-white text-2xl font-bold">PulsePlay&nbsp; {isAdmin ? (<div className='text-red-500'> Admin</div>) : ""}</h2>
                 <div className='flex flex-col justify-between h-screen pb-10 px-3'>
                     <ul className="flex flex-col gap-7 p-4 text-white">
                         <div className='flex items-center gap-6'>
@@ -86,14 +86,14 @@ const Navbar = () => {
                     </div>
                 </div>
 
-                
+
             </div>
- {!menuBarToggle && (
-          <div
-            className="fixed inset-0 bg-opacity-40 z-30"
-            onClick={() => setMenuBarToggle(true)}
-          ></div>
-        )}
+            {!menuBarToggle && (
+                <div
+                    className="fixed inset-0 bg-opacity-40 z-30"
+                    onClick={() => setMenuBarToggle(true)}
+                ></div>
+            )}
         </div>
 
     )

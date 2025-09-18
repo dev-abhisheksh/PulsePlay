@@ -70,8 +70,8 @@ const App = () => {
             <ProtectedRoute>
               <>
                 <PlaylistPage
-                   songs={songs}
-                   setSongs={setSongs}
+                  songs={songs}
+                  setSongs={setSongs}
                   currentIndex={currentIndex}
                   setCurrentIndex={setCurrentIndex}
                 />
