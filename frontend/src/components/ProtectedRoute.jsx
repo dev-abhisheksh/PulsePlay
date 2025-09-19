@@ -7,7 +7,7 @@ import axios from "axios";
 const ProtectedRoute = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
+  const pp = "https://pulseplay-8e09.onrender.com" /*"http://localhost:4000"*/;
 
   useEffect(() => {
     const verifyUser = async () => {

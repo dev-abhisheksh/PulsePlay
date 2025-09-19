@@ -12,7 +12,8 @@ const songSchema = mongoose.Schema({
     },
     genre: {
         type: String,
-        required: true
+        required: true,
+        enum: ["Phonk", "Rock", "Sad", "Pop", "Hip-Hop", "Jazz"]
     },
     audioUrl: {
         type: String,

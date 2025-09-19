@@ -2,13 +2,22 @@
 import axios from 'axios'
 import React, { useEffect, useRef, useState } from 'react'
 import { FaSearch } from 'react-icons/fa'
+import { IoFilterCircle } from "react-icons/io5";
 
-const SearchBar = ({ onSongSelect, currentIndex, songs = [] }) => {
+const SearchBar = ({ onSongSelect, currentIndex, songs = [], isFilterGenreToggle, setIsFilterGenreToggle }) => {
     const [searchValue, setSearchValue] = useState('')
     const [results, setResults] = useState([])
     const boxRef = useRef(null)
     const currentSong = songs[currentIndex] || {};
-    const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
+    const [isFilterSelected, setIsFilterSelected] = useState(false)
+
+   const pp = "https://pulseplay-8e09.onrender.com" /*"http://localhost:4000"*/;
+
+    const GenreToggle = () => {
+        setIsFilterGenreToggle((prev) => !prev);
+        setIsFilterSelected((prev) => !prev);
+    };
+
 
     useEffect(() => {
         if (!searchValue.trim()) {
@@ -55,8 +64,8 @@ const SearchBar = ({ onSongSelect, currentIndex, songs = [] }) => {
                 onChange={(e) => setSearchValue(e.target.value)}
                 className="h-[67%] w-[80%] rounded-full bg-[#393939] text-white font-bold focus:outline-none px-4 placeholder-gray-400"
             />
-            <div className="h-[70%] w-[13%] rounded-full bg-[#393939] flex justify-center items-center">
-                <FaSearch size={23} className="text-white" />
+            <div onClick={GenreToggle} className="h-[70%] w-[13%] rounded-full bg-[#393939] flex justify-center items-center">
+                {isFilterSelected ? <IoFilterCircle size={70} className="text-orange-500" /> : <IoFilterCircle size={60} className="text-white" />}
             </div>
 
             {results.length > 0 && (
@@ -67,7 +76,7 @@ const SearchBar = ({ onSongSelect, currentIndex, songs = [] }) => {
                             onClick={() => onSongSelect(song)}  // 👈 HERE
                             className="cursor-pointer hover:bg-gray-700 px-2 py-1 flex items-center gap-3 border-1 border-[#FD830D] rounded-md "
                         >
-                            <img src={song.coverImage} className="w-10 h-10 rounded-md object-cover border border-white"/>
+                            <img src={song.coverImage} className="w-10 h-10 rounded-md object-cover border border-white" />
                             {song.title} — {song.artist}
                         </h1>
                     ))}

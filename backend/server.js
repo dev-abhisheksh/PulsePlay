@@ -11,25 +11,8 @@ dotenv.config();
 
 const app = express();
 
-const corsOptions = {
-  origin: [
-    'http://localhost:5173',  // Your Vite dev server
-    'https://pulseplay-8e09.onrender.com',
-    'https://music-pulseplay.onrender.com'
-  ],
-  credentials: true, // Allow cookies
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: [
-    'Content-Type',
-    'Authorization',
-    'X-Requested-With',
-    'Accept',
-    'Origin'
-  ],
-  optionsSuccessStatus: 200 // For legacy browsers
-};
 app.use(cors({
-  origin: "https://music-pulseplay.onrender.com", // your deployed frontend
+  origin: "http://localhost:5173", // your deployed frontend
   credentials: true  // allow cookies to be sent
 }));
 

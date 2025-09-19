@@ -27,13 +27,14 @@ const App = () => {
   const hidePlayer =
     location.pathname === "/login" ||
     location.pathname === "/register";
-  const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
+  const pp = "https://pulseplay-8e09.onrender.com" /*"http://localhost:4000"*/;
 
   useEffect(() => {
     const fetchSongs = async () => {
       try {
         const res = await axios.get(`${pp}/api/song/songs`);
         setSongs(res.data.songs);
+        console.log(res.data.songs)
       } catch (error) {
         console.error("Error fetching songs", error);
       }

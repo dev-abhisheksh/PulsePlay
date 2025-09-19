@@ -25,7 +25,22 @@ const AdminDashboard = ({ songs, setSongs }) => {
   const [currentEditSong, setCurrentEditSong] = useState(null);
   const [editSongModal, setEditSongModal] = useState(false)
 
-  const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
+  const GENRES = [
+    "Phonk",
+    "Pop",
+    "Rock",
+    "Hip-Hop",
+    "R&B",
+    "Electronic",
+    "Jazz",
+    "Classical",
+    "Reggae",
+    "Metal",
+    "Country"
+  ];
+
+
+  const pp = "https://pulseplay-8e09.onrender.com" /*"http://localhost:4000"*/;
 
   // Open modal and select song
   const openEditModal = (song) => {
@@ -307,15 +322,19 @@ const AdminDashboard = ({ songs, setSongs }) => {
 
                 <div className="flex flex-col">
                   <label>Genre</label>
-                  <input
-                    type="text"
+                  <select
                     value={currentEditSong.genre}
                     onChange={(e) =>
                       setCurrentEditSong({ ...currentEditSong, genre: e.target.value })
                     }
                     className="border rounded px-2 py-1"
                     required
-                  />
+                  >
+                    {GENRES.map((g) => (
+                      <option key={g} value={g}>{g}</option>
+                    ))}
+                  </select>
+
                 </div>
 
                 <div className="flex flex-col">
@@ -353,7 +372,12 @@ const AdminDashboard = ({ songs, setSongs }) => {
                 <form className="flex flex-col gap-4">
                   <input ref={titleRef} type="text" name="title" placeholder="Song Title" className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required />
                   <input ref={artistRef} type="text" name="artist" placeholder="Artist" className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required />
-                  <input ref={genreRef} type="text" name="genre" placeholder="Genre" className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                  <select ref={genreRef} name="genre" className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    {GENRES.map((g) => (
+                      <option key={g} value={g}>{g}</option>
+                    ))}
+                  </select>
+
                   <label className="flex flex-col overflow-hidden">
                     Cover Image:
                     <button className='border p-2 rounded-md bg-green-500 text-white font-bold'>

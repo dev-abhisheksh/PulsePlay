@@ -8,7 +8,7 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, s
     const [playlists, setPlaylists] = useState([]);
     const [loading, setLoading] = useState(true);
     const [suffleOn, setSuffleOn] = useState(false)
-    const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
+    const pp = /*"https://pulseplay-8e09.onrender.com"*/  "http://localhost:4000";
 
     const handlePlayClick = (songId) => {
         const globalIndex = songs.findIndex((s) => s._id === songId);

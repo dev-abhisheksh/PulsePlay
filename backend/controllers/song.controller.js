@@ -2,19 +2,41 @@ import cloudinary from "cloudinary"
 import { Song } from "../models/song.model.js"
 import { streamUpload } from "../middlewares/upload.middleware.js";
 
+const ALLOWED_GENRES = [
+    "Phonk",
+    "Pop",
+    "Rock",
+    "Hip-Hop",
+    "R&B",
+    "Electronic",
+    "Jazz",
+    "Classical",
+    "Reggae",
+    "Metal",
+    "Country"
+];
+
+
+
 const addSong = async (req, res) => {
     try {
         const { title, artist, genre } = req.body;
+
         if (!title || !artist || !genre) {
             return res.status(400).json({ message: "Title, artist, and genre are required" });
+        }
+
+        // ✅ validate genre
+        if (!ALLOWED_GENRES.includes(genre)) {
+            return res.status(400).json({ message: `Invalid genre. Allowed: ${ALLOWED_GENRES.join(", ")}` });
         }
 
         if (!req.files || !req.files.audio || !req.files.coverImage) {
             return res.status(400).json({ message: "Audio and CoverImage are required" })
         }
 
-        const audioUpload = await streamUpload(req.files.audio[0].buffer, "video")
-        const coverUpload = await streamUpload(req.files.coverImage[0].buffer, "image")
+        const audioUpload = await streamUpload(req.files.audio[0].buffer, "video");
+        const coverUpload = await streamUpload(req.files.coverImage[0].buffer, "image");
 
         const song = await Song.create({
             title,
@@ -22,15 +44,15 @@ const addSong = async (req, res) => {
             genre,
             audioUrl: audioUpload.secure_url,
             coverImage: coverUpload.secure_url
-        })
+        });
 
-        return res.status(201).json({ message: "Song added successfully", song })
+        return res.status(201).json({ message: "Song added successfully", song });
     } catch (error) {
-        console.log("Error adding song: ", error)
-        return res.status(500).json({ message: "Failed to add song" })
-
+        console.log("Error adding song: ", error);
+        return res.status(500).json({ message: "Failed to add song" });
     }
-}
+};
+
 
 const getSongs = async (req, res) => {
     try {
@@ -129,13 +151,18 @@ const hideMultipleSongs = async (req, res) => {
 
 const editSong = async (req, res) => {
     const { id } = req.params;
-
-    const { title, artist, genre } = req.body || {}; // avoid destructuring undefined
+    const { title, artist, genre } = req.body || {};
 
     const updateData = {};
     if (title) updateData.title = title;
     if (artist) updateData.artist = artist;
-    if (genre) updateData.genre = genre;
+
+    if (genre) {
+        if (!ALLOWED_GENRES.includes(genre)) {
+            return res.status(400).json({ message: `Invalid genre. Allowed: ${ALLOWED_GENRES.join(", ")}` });
+        }
+        updateData.genre = genre;
+    }
 
     try {
         if (req.files?.coverImage) {
@@ -160,6 +187,7 @@ const editSong = async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 };
+
 
 
 
