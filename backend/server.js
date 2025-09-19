@@ -11,8 +11,9 @@ dotenv.config();
 
 const app = express();
 
+
 app.use(cors({
-  origin: "http://localhost:5173", // your deployed frontend
+  origin: "https://pulseplay-8e09.onrender.com", // your deployed frontend
   credentials: true  // allow cookies to be sent
 }));
 
