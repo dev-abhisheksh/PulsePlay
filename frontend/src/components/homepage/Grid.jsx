@@ -6,7 +6,7 @@ const Grid = ({ songs, currentIndex, setCurrentIndex, selectedGenre }) => {
   const [playlistState, setPlaylistState] = useState({});
   const [playlistId, setPlaylistId] = useState(null);
 
-  const pp = "https://pulseplay-8e09.onrender.com" /*"http://localhost:4000"*/;
+  const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
 
   // Sort songs based on selected genre
   const sortedSongs = [...songs].sort((a, b) => {

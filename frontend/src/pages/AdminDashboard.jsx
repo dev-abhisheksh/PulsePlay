@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { FaAlignJustify, FaAlignRight, FaHome, FaSearch, FaMusic, FaDownload, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaUserEdit, FaAlignJustify, FaAlignRight, FaHome, FaSearch, FaMusic, FaDownload, FaEye, FaEyeSlash } from "react-icons/fa";
 import { TiEdit } from "react-icons/ti";
 import { Link } from 'react-router-dom';
 import { IoAddCircleOutline } from "react-icons/io5";
-import { MdOutlineSettingsSuggest } from "react-icons/md";
+import { MdOutlineSettingsSuggest, MdEditNotifications } from "react-icons/md";
+import { AiOutlineUserDelete, AiFillEdit } from "react-icons/ai";
 
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -20,10 +21,15 @@ const AdminDashboard = ({ songs, setSongs }) => {
   const coverRef = useRef();
   const audioRef = useRef();
   const [uploading, setUploading] = useState(false);
-  const [username, setUsername] = useState();
+  const [username, setUsername] = useState("");
   const navigate = useNavigate();
   const [currentEditSong, setCurrentEditSong] = useState(null);
   const [editSongModal, setEditSongModal] = useState(false)
+  const [isUserEditToggleOpen, setIsUserEditToggleOpen] = useState(false)
+  const [isSongEditToggleOpen, setIsSongEditToggleOpen] = useState(false)
+  const [allUsers, setAllUsers] = useState()
+
+  const [role, setRole] = useState("user")
 
   const GENRES = [
     "Phonk",
@@ -40,7 +46,35 @@ const AdminDashboard = ({ songs, setSongs }) => {
   ];
 
 
-  const pp = "https://pulseplay-8e09.onrender.com" /*"http://localhost:4000"*/;
+  const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
+
+  const fetchUsers = async () => {
+    try {
+      const res = await axios.get(`${pp}/api/all-users`, { withCredentials: true })
+      setAllUsers(res.data)
+      console.lo(res.data)
+    } catch (error) {
+
+    }
+  }
+
+  const deleteUser = async () => {
+    try {
+      const res = await axios.delete(`${pp}/api/delete-user`, { data: { username }, withCredentials: true })
+      toast.success(res.data.message);
+    } catch (error) {
+      toast.error("Failed to delete role");
+    }
+  }
+
+  const updateRole = async () => {
+    try {
+      const res = await axios.patch(`${pp}/api/role-update`, { username, role }, { withCredentials: true })
+      toast.success(res.data.message);
+    } catch (error) {
+      toast.error("Failed to update role");
+    }
+  }
 
   // Open modal and select song
   const openEditModal = (song) => {
@@ -320,6 +354,8 @@ const AdminDashboard = ({ songs, setSongs }) => {
                   />
                 </div>
 
+
+
                 <div className="flex flex-col">
                   <label>Genre</label>
                   <select
@@ -399,45 +435,166 @@ const AdminDashboard = ({ songs, setSongs }) => {
           </div>
         )}
 
-        {/* Song Management List */}
+
+
         <div className='flex justify-center'>
-          <div className='w-[90%] h-auto bg-[#2A2738] flex flex-col items-center rounded-md gap-7 border border-white' >
-            <h1 className='text-white font-bold text-2xl pt-3'>Song Management</h1>
-            <div className='flex flex-col gap-3 pb-3'>
-              {songs.map((song) => (
-                <div
-                  key={song._id}
-                  className="flex justify-between gap-10 border border-white rounded items-center px-2 py-1 bg-[#444445]"
-                >
-                  <p className="text-white text-lg">{song.title}</p>
+          <div className='flex justify-between w-[90%] gap-5'>
+            <div onClick={() => setIsSongEditToggleOpen(!isSongEditToggleOpen)} className='w-[50%] h-[10vh] border bg-blue-400 rounded-md flex justify-center items-center gap-3 text-white font-bold text-2xl'><MdEditNotifications size={30} /> Song </div>
+            <div onClick={() => setIsUserEditToggleOpen(!isUserEditToggleOpen)} className='w-[50%] h-[10vh] border bg-blue-400 rounded-md flex justify-center items-center gap-3 text-white font-bold text-2xl'><FaUserEdit size={30} /> User </div>
+          </div>
+        </div>
 
-                  <div className="flex gap-3">
-                    {song.hidden ? (
-                      <FaEyeSlash
-                        className="text-red-400 cursor-pointer"
-                        onClick={() => handleSongVisibility(song._id, true)}
-                      />
-                    ) : (
-                      <FaEye
-                        className="text-green-400 cursor-pointer"
-                        onClick={() => handleSongVisibility(song._id, false)}
-                      />
-                    )}
 
-                    {/* Edit Button */}
-                    <button
-                      className="bg-blue-500 text-white px-2 py-1 rounded"
-                      onClick={() => openEditModal(song)}
-                    >
-                      Edit
+        {isSongEditToggleOpen && (
+          <div className='flex justify-center'>
+            <div className='w-[90%] h-auto bg-[#2A2738] flex flex-col items-center rounded-md gap-7 border border-white' >
+              <h1 className='text-white font-bold text-2xl pt-3'>Song Management</h1>
+              <div className='flex flex-col gap-3 pb-3'>
+                {songs.map((song) => (
+                  <div
+                    key={song._id}
+                    className="flex justify-between gap-10 border border-white rounded items-center px-2 py-1 bg-[#444445]"
+                  >
+                    <p className="text-white text-lg">{song.title}</p>
+
+                    <div className="flex gap-3">
+                      {song.hidden ? (
+                        <FaEyeSlash
+                          className="text-red-400 cursor-pointer"
+                          onClick={() => handleSongVisibility(song._id, true)}
+                        />
+                      ) : (
+                        <FaEye
+                          className="text-green-400 cursor-pointer"
+                          onClick={() => handleSongVisibility(song._id, false)}
+                        />
+                      )}
+
+                      {/* Edit Button */}
+                      <button
+                        className="bg-blue-500 text-white px-2 py-1 rounded"
+                        onClick={() => openEditModal(song)}
+                      >
+                        <AiFillEdit />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+
+              </div>
+            </div>
+          </div>
+        )}
+
+
+
+
+
+
+        {isUserEditToggleOpen && (
+          <div className="flex justify-center items-center gap-5">
+            <div className="flex flex-col justify-center items-center w-[90%] max-w-md gap-5">
+
+              <div className="w-full flex justify-center items-center ">
+                <div className="w-[95%] max-w-md bg-[#393939] shadow-lg rounded-xl p-6">
+                  {/* Header */}
+                  <div className="bg-blue-400 text-white font-semibold text-center py-2 rounded-md mb-6">
+                    <h1>Update Role</h1>
+                  </div>
+
+                  {/* Form */}
+                  <div className="flex flex-col gap-4">
+                    <input
+                      // value={username}
+                      type="text"
+                      placeholder="Enter username"
+                      className="border px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white"
+                      onChange={(e) => setUsername(e.target.value)}
+                    />
+                    <select
+                      value={role} onChange={(e) => setRole(e.target.value)}
+                      className="border px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white">
+                      <option value="admin">Admin</option>
+                      <option value="user">User</option>
+                    </select>
+                    <button onClick={updateRole} className="bg-green-500 text-white py-2 rounded-lg hover:bg-purple-600 transition">
+                      Update
                     </button>
                   </div>
                 </div>
-              ))}
+              </div>
+
+
+
+
+              <div className="w-full flex justify-center items-center ">
+                <div className="w-[95%] max-w-md bg-[#393939] shadow-lg rounded-xl p-6">
+                  {/* Header */}
+                  <div className="bg-blue-400 text-white font-semibold text-center py-2 rounded-md mb-6">
+                    <h1>Update Role</h1>
+                  </div>
+
+                  {/* Form */}
+                  <div className="flex gap-4">
+                    <input
+                      // value={username}
+                      type="text"
+                      placeholder="Enter username"
+                      className="border px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white"
+                      onChange={(e) => setUsername(e.target.value)}
+                    />
+
+                    <button onClick={deleteUser} className="bg-red-500 text-white py-2 rounded-lg hover:bg-purple-600 transition">
+                      <AiOutlineUserDelete size={20} className='w-10' />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+
+
+
+        <div className="w-full flex justify-center items-center py-5">
+          <div className="w-[90%] max-w-3xl bg-[#393939] rounded-xl shadow-lg flex flex-col items-center py-5 gap-5">
+
+            {/* Header: Title + Search Icon */}
+            <div className='flex items-center gap-3 w-full justify-between px-5 pb-2 border-b border-gray-700'>
+              <h1 className="text-2xl text-white font-bold">Fetch All Users</h1>
+              <button onClick={fetchUsers} className="text-white p-2 bg-orange-500 rounded-md hover:bg-gray-700 transition-colors border">
+                <FaSearch size={22} />
+              </button>
+            </div>
+
+            {/* Data Container */}
+            <div className="flex flex-col gap-2 w-full px-5 max-h-96 overflow-y-auto">
+
+              {allUsers && allUsers.length > 0 ? (
+                allUsers.map((user) => (
+                  <div
+                    key={user._id}
+                    className="bg-white text-black px-3 py-2 rounded-md hover:bg-gray-600 transition-all flex justify-between items-center"
+                  >
+                    <p className='font-bold'>{user.username}</p>
+                    <p className={`text-sm ${user.role === "admin" ? "text-red-400 font-bold" : "text-green-500 font-bold"}`}>
+                      {user.role}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                ""
+              )}
 
             </div>
           </div>
         </div>
+
+
+
+
+
       </div>
     </div>
   );

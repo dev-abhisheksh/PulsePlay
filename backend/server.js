@@ -13,7 +13,7 @@ const app = express();
 
 
 app.use(cors({
-  origin: "https://music-pulseplay.onrender.com", // your deployed frontend
+  origin: "https://music-pulseplay.onrender.com"  /* "http://localhost:5173"*/, // your deployed frontend
   credentials: true  // allow cookies to be sent
 }));
 
