@@ -2,7 +2,7 @@
 import axios from 'axios'
 import React, { useEffect, useRef, useState } from 'react'
 import { FaSearch } from 'react-icons/fa'
-import { IoFilterCircle } from "react-icons/io5";
+import { IoFilterCircle, IoListCircle } from "react-icons/io5";
 
 const SearchBar = ({ onSongSelect, currentIndex, songs = [], isFilterGenreToggle, setIsFilterGenreToggle }) => {
     const [searchValue, setSearchValue] = useState('')

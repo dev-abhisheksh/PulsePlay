@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 const GenreFilter = ({ isFilterGenreToggle, selectedGenre, setSelectedGenre }) => {
-    const genres = ["Phonk", "R&B", "Rock"]
+    const genres = ["Phonk", "R&B", "Rock", "Pop"]
 
     const handleGenreClick = (genre) => {
         setSelectedGenre(prev => prev === genre ? null : genre)
@@ -20,7 +20,7 @@ const GenreFilter = ({ isFilterGenreToggle, selectedGenre, setSelectedGenre }) =
                     key={genre}
                     onClick={() => handleGenreClick(genre)}
                     className={`
-            rounded-md font-bold h-10 w-20 flex justify-center items-center
+            rounded-md font-bold h-8 w-16 flex justify-center items-center
             ${selectedGenre === genre ? "bg-green-500 text-black" : "bg-[#393939] text-white"}
           `}
                 >

@@ -12,7 +12,7 @@ const AdminRoute = ({ children }) => {
         const res = await axios.get(`${pp}/api/verify`, {
           withCredentials: true
         })
-        console.log(res.data.user.role)
+        // console.log(res.data.user.role)
         setIsAdmin(res.data.user.role === "admin")
 
       } catch (error) {

@@ -34,7 +34,7 @@ const App = () => {
       try {
         const res = await axios.get(`${pp}/api/song/songs`);
         setSongs(res.data.songs);
-        console.log(res.data.songs)
+        // console.log(res.data.songs)
       } catch (error) {
         console.error("Error fetching songs", error);
       }

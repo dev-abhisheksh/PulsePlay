@@ -249,7 +249,7 @@ const AdminDashboard = ({ songs, setSongs }) => {
           <ul className="flex flex-col gap-7 p-4 text-white">
             <div className='flex items-center gap-6'>
               <FaHome size={25} className='text-white ' />
-              <Link to="/">Player</Link>
+              <Link to="/">Home</Link>
             </div>
             <div className='flex items-center gap-6'>
               <FaSearch size={20} className='text-white' />

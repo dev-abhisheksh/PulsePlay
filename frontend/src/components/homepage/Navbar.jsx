@@ -13,7 +13,6 @@ const Navbar = () => {
     const navigate = useNavigate()
     const [isAdmin, setIsAdmin] = useState(false)
     const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
-
     const handleLogout = async () => {
         await axios.get(`${pp}/api/logout`, { withCredentials: true })
         navigate("/login");
