@@ -10,7 +10,7 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, s
     const [renamePlaylistId, setRenamePlaylistId] = useState(null);
     const [newName, setNewName] = useState("");
 
-    const pp = /*"https://pulseplay-8e09.onrender.com"*/  "http://localhost:4000"
+    const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/
 
     // Handle renaming a playlist
     const handleRename = async (playlistId) => {
