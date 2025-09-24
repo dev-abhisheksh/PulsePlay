@@ -1,14 +1,18 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useRef, useState, useMemo, useContext } from 'react';
 import { FaArrowAltCircleLeft, FaPlay, FaArrowAltCircleRight, FaPause } from "react-icons/fa";
 import { MdPlaylistAddCheckCircle, MdPlaylistAddCircle, MdLoop, MdOutlineShuffle } from "react-icons/md";
 import { RiPlayListFill } from "react-icons/ri";
-
+import { AddToPlaylistFromExtendedPlayer } from "../../context/AddToPlaylistFromExtendedPlayer";
 
 const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggle, setPlayToggle }) => {
+    const contextValue = useContext(AddToPlaylistFromExtendedPlayer);
+    const { playlistState, handleAddSong, handleRemoveSong } = contextValue || {};
+
+    
+
     const [playMode, setPlayMode] = useState("playlist"); // "single" | "playlist"
     const [duration, setDuration] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
-    const [addToPlaylist, setAddToPlaylist] = useState(true);
     const [playerExpanded, setPlayerExpanded] = useState(false);
     const audioRef = useRef(null);
 
@@ -20,18 +24,38 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
     // Adjust currentIndex to work with filtered songs
     const adjustedCurrentIndex = useMemo(() => {
         if (visibleSongs.length === 0) return 0;
-        
+
         // Find the current song in the visible songs array
         const currentSong = songs[currentIndex];
         if (!currentSong || currentSong.hidden) {
             return 0; // Default to first visible song if current is hidden
         }
-        
+
         const visibleIndex = visibleSongs.findIndex(song => song._id === currentSong._id);
         return visibleIndex >= 0 ? visibleIndex : 0;
     }, [visibleSongs, songs, currentIndex]);
 
     const currentSong = visibleSongs[adjustedCurrentIndex] || {};
+
+    // ✅ Fixed: Add to playlist toggle function
+    const handlePlaylistToggle = () => {
+        if (!currentSong?._id) {
+            console.log("No current song ID found");
+            return;
+        }
+
+
+        // Check if the song is already in the playlist
+        const isInPlaylist = playlistState[currentSong._id];
+
+        if (isInPlaylist) {
+           
+            handleRemoveSong(currentSong._id);
+        } else {
+           
+            handleAddSong(currentSong._id);
+        }
+    };
 
     const handlePlayToggle = () => setPlayToggle(!playToggle);
 
@@ -78,8 +102,6 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
     const togglePlayMode = () => {
         setPlayMode((prev) => (prev === "single" ? "playlist" : "single"));
     };
-
-    const handlePlaylistToggle = () => setAddToPlaylist(!addToPlaylist);
 
     const formatTime = (time) => {
         if (!time || isNaN(time)) return "0:00";
@@ -178,15 +200,20 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
                     {/* Song Info and Progress */}
                     <div className='flex flex-col gap-3'>
                         <div className='flex flex-col gap-2'>
-                            <div onClick={handlePlaylistToggle} className='flex justify-between items-center'>
+                            <div className='flex justify-between items-center'>
                                 <h1 className='text-2xl font-bold text-white truncate pr-2'>
                                     {currentSong.title || "Loading"}
                                 </h1>
-                                <div className="transition-transform duration-200 hover:scale-110">
-                                    {addToPlaylist ? (
-                                        <MdPlaylistAddCircle size={28} className='text-white cursor-pointer' />
+                                {/* ✅ Fixed: Added onClick handler and corrected property access */}
+                                <div 
+                                    onClick={handlePlaylistToggle}
+                                    className="transition-transform duration-200 hover:scale-110 cursor-pointer"
+                                >
+                                    
+                                    {playlistState[currentSong._id] ? (
+                                        <MdPlaylistAddCheckCircle size={28} className="text-green-400" />
                                     ) : (
-                                        <MdPlaylistAddCheckCircle size={28} className='text-green-500 cursor-pointer' />
+                                        <MdPlaylistAddCircle size={28} className="text-white" />
                                     )}
                                 </div>
                             </div>
@@ -251,7 +278,7 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
             </div>
 
             {/* Compact Player */}
-            <div className={`h-[15vh] w-full bg-black transition-all duration-500 ease-in-out`}>
+            <div className={`h-[15vh] w-full bg-black transition-all duration-500 ease-in-out border-white border-t-3`}>
                 <div className="h-full flex items-center gap-4 px-3">
                     <div
                         onClick={() => setPlayerExpanded(!playerExpanded)}
@@ -266,7 +293,7 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
                         )}
                     </div>
 
-                    <div className="flex-1 min-w-0">
+                    <div onClick={() => setPlayerExpanded(!playerExpanded)} className="flex-1 min-w-0">
                         <h1 className="text-white font-bold truncate">{currentSong.title || "Loading"}</h1>
                         <p className="text-gray-300 text-[11px] truncate">{currentSong.artist || "Loading"}</p>
                     </div>

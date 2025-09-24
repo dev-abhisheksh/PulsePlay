@@ -13,4 +13,4 @@ router.patch("/:playlistId/remove-song", verifyUser, removeSongFromPlaylist)
 router.patch("/:playlistId/rename", verifyUser, renamePlaylist)
 router.patch("/:playlistId/reorder", verifyUser, reorderSongsInPlaylist);
 
-export default router;
+export default router;  

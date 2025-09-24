@@ -5,7 +5,7 @@ import axios from "axios";
 const AdminRoute = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-  const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
+ const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/
   useEffect(() => {
     const checkAdmin = async () => {
       try {

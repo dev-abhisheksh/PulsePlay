@@ -46,8 +46,7 @@ const AdminDashboard = ({ songs, setSongs }) => {
   ];
 
 
-  const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
-
+  const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/
   const fetchUsers = async () => {
     try {
       const res = await axios.get(`${pp}/api/all-users`, { withCredentials: true })
@@ -531,7 +530,7 @@ const AdminDashboard = ({ songs, setSongs }) => {
                 <div className="w-[95%] max-w-md bg-[#393939] shadow-lg rounded-xl p-6">
                   {/* Header */}
                   <div className="bg-blue-400 text-white font-semibold text-center py-2 rounded-md mb-6">
-                    <h1>Update Role</h1>
+                    <h1 >Delete User</h1>
                   </div>
 
                   {/* Form */}
@@ -540,7 +539,7 @@ const AdminDashboard = ({ songs, setSongs }) => {
                       // value={username}
                       type="text"
                       placeholder="Enter username"
-                      className="border px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white"
+                      className="border w-[80%] px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white"
                       onChange={(e) => setUsername(e.target.value)}
                     />
 
@@ -592,7 +591,9 @@ const AdminDashboard = ({ songs, setSongs }) => {
         </div>
 
 
+<div className='h-10 w-full'>
 
+</div>
 
 
       </div>

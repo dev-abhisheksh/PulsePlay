@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useContext } from "react";
 import { MdPlaylistAddCheckCircle, MdPlaylistAddCircle } from "react-icons/md";
-
+import { AddToPlaylistFromExtendedPlayer } from "../../context/AddToPlaylistFromExtendedPlayer";
 
 const Grid = ({ songs, currentIndex, setCurrentIndex, selectedGenre }) => {
-  const [playlistState, setPlaylistState] = useState({});
-  const [playlistId, setPlaylistId] = useState(null);
-
-  const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
+  const { playlistState, handleAddSong, handleRemoveSong } = useContext(AddToPlaylistFromExtendedPlayer);
 
   // Sort songs based on selected genre
   const sortedSongs = [...songs].sort((a, b) => {
@@ -17,60 +13,10 @@ const Grid = ({ songs, currentIndex, setCurrentIndex, selectedGenre }) => {
     return 0;
   });
 
-  useEffect(() => {
-    const fetchPlaylist = async () => {
-      try {
-        const res = await axios.get(`${pp}/api/playlist`, {
-          withCredentials: true,
-        });
-        if (res.data.playlists && res.data.playlists.length > 0) {
-          const pl = res.data.playlists[0]; // only one playlist
-          setPlaylistId(pl._id);
-          const state = {};
-          pl.songs.forEach((song) => {
-            state[song._id] = true;
-          });
-          setPlaylistState(state);
-        }
-      } catch (err) {
-        console.error("Failed to fetch playlist:", err);
-      }
-    };
-    fetchPlaylist();
-  }, []);
-
   const handlePlayClick = (index, songId) => {
     // Find the original index of this song in the unsorted array
     const originalIndex = songs.findIndex(song => song._id === songId);
     setCurrentIndex(originalIndex);
-  };
-
-  const handleAddSong = async (songId) => {
-    try {
-      const res = await axios.post(
-        `${pp}/api/playlist/${playlistId}/add-song`,
-        { songId },
-        { withCredentials: true }
-      );
-      setPlaylistState((prev) => ({ ...prev, [songId]: true }));
-      console.log("Song added:", res.data.playlist);
-    } catch (err) {
-      console.error("Failed to add song:", err.response?.data || err.message);
-    }
-  };
-
-  const handleRemoveSong = async (songId) => {
-    try {
-      const res = await axios.patch(
-        `${pp}/api/playlist/${playlistId}/remove-song`,
-        { songId },
-        { withCredentials: true }
-      );
-      setPlaylistState((prev) => ({ ...prev, [songId]: false }));
-      console.log("Song removed:", res.data.playlist);
-    } catch (err) {
-      console.error("Failed to remove song:", err.response?.data || err.message);
-    }
   };
 
   if (!songs || songs.length === 0) {
@@ -128,7 +74,7 @@ const Grid = ({ songs, currentIndex, setCurrentIndex, selectedGenre }) => {
                   handleAddSong(song._id);
                 }
               }}
-              className="flex-shrink-0"
+              className="flex-shrink-0 transition-transform duration-200 hover:scale-110 cursor-pointer"
             >
               {playlistState[song._id] ? (
                 <MdPlaylistAddCheckCircle size={28} className="text-green-400" />
@@ -139,6 +85,11 @@ const Grid = ({ songs, currentIndex, setCurrentIndex, selectedGenre }) => {
           </div>
         );
       })}
+
+      <div className='h-5 w-full'>
+
+      </div>
+
     </div>
   );
 };

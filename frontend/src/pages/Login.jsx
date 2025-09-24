@@ -9,7 +9,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [passVisible, setPassVisible] = useState(false);
     const navigate = useNavigate();
-    const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/;
+    const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/
     const handlePassVisibility = () => {
         setPassVisible(!passVisible);
     }
@@ -61,7 +61,7 @@ const Login = () => {
                                 <h1 className='text-white font-bold pl-3'>PASSWORD</h1>
                                 <div className='flex justify-between items-center h-10 w-70 px-4 bg-[#555C7C] rounded-2xl focus-within:ring-2 focus-within:ring-amber-600'>
                                     <input
-                                        className='bg-transparent text-white placeholder-gray-300 flex-1 outline-none border-none focus:outline-none'
+                                        className='w-[80%] bg-transparent text-white placeholder-gray-300 flex-1 outline-none border-none focus:outline-none'
                                         onChange={(e) => setPassword(e.target.value)}
                                         type={passVisible ? "text" : "password"}
                                         value={password}
