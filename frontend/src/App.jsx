@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import axios from "axios";
 import Navbar from "./components/homepage/Navbar";
@@ -12,6 +12,8 @@ import AdminRoute from "./components/AdminRoute";
 import AdminDashboard from "./pages/AdminDashboard";
 import { ToastContainer, toast } from "react-toastify";
 import { AddToPlaylistFromExtendedPlayer } from "./context/AddToPlaylistFromExtendedPlayer";
+import { ApiContext } from "./context/ApiContext";
+import { fetchChangelog } from "./context/fetchChangelog";
 
 const App = () => {
   const [songs, setSongs] = useState([]);
@@ -19,6 +21,9 @@ const App = () => {
   const [playToggle, setPlayToggle] = useState(false);
   const [playlistId, setPlaylistId] = useState(null);
   const [playlistState, setPlaylistState] = useState({});
+  const [changelogs, setChangelogs] = useState([]);
+  const [pp, setpp] = useState("https://pulseplay-8e09.onrender.com" /*"http://localhost:4000"*/)
+
 
   const location = useLocation();
   const hideNav =
@@ -29,10 +34,13 @@ const App = () => {
 
   const hidePlayer =
     location.pathname === "/login" ||
-    location.pathname === "/register"
-  // location.pathname === "/admin";
+    location.pathname === "/register" ||
+    location.pathname === "/admin";
 
-  const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/
+  // const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/
+
+
+
 
   // ✅ Fetch songs once
   useEffect(() => {
@@ -89,7 +97,7 @@ const App = () => {
         console.error("Failed to fetch/create playlist:", err);
         // If it's an authentication error, don't show toast
         if (err.response?.status !== 401) {
-          toast.error("Failed to load playlist");
+          // toast.error("Failed to load playlist");
         }
       }
     };
@@ -162,77 +170,85 @@ const App = () => {
   };
 
   return (
-    <div className="App flex flex-col h-screen">
-      {/* Conditionally render Navbar */}
-      {!hideNav && <Navbar />}
+    <ApiContext.Provider value={pp}>
 
-      <AddToPlaylistFromExtendedPlayer.Provider
-        value={{ playlistId, playlistState, handleAddSong, handleRemoveSong }}
-      >
-        {/* Routes */}
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+      <fetchChangelog.Provider value={changelogs}>
 
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <ExplorePage
-                  songs={songs}
-                  currentIndex={currentIndex}
-                  setCurrentIndex={setCurrentIndex}
-                />
-              </ProtectedRoute>
-            }
+
+
+        <div className="App flex flex-col h-screen">
+          {/* Conditionally render Navbar */}
+          {!hideNav && <Navbar />}
+
+          <AddToPlaylistFromExtendedPlayer.Provider
+            value={{ playlistId, playlistState, handleAddSong, handleRemoveSong }}
+          >
+            {/* Routes */}
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <ExplorePage
+                      songs={songs}
+                      currentIndex={currentIndex}
+                      setCurrentIndex={setCurrentIndex}
+                    />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/playlist"
+                element={
+                  <ProtectedRoute>
+                    <>
+                      <PlaylistPage
+                        songs={songs}
+                        setSongs={setSongs}
+                        currentIndex={currentIndex}
+                        setCurrentIndex={setCurrentIndex}
+                      />
+                      <ToastContainer position="top-center" />
+                    </>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/admin"
+                element={
+                  <AdminRoute>
+                    <AdminDashboard songs={songs} setSongs={setSongs} />
+                  </AdminRoute>
+                }
+              />
+            </Routes>
+
+            {/* Conditionally render PlayerBottom - MOVED INSIDE PROVIDER */}
+            {!hidePlayer && (
+              <PlayerBottom
+                songs={songs}
+                currentIndex={currentIndex}
+                setCurrentIndex={setCurrentIndex}
+                playToggle={playToggle}
+                setPlayToggle={setPlayToggle}
+              />
+            )}
+          </AddToPlaylistFromExtendedPlayer.Provider>
+
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            pauseOnHover
+            draggable
           />
-
-          <Route
-            path="/playlist"
-            element={
-              <ProtectedRoute>
-                <>
-                  <PlaylistPage
-                    songs={songs}
-                    setSongs={setSongs}
-                    currentIndex={currentIndex}
-                    setCurrentIndex={setCurrentIndex}
-                  />
-                  <ToastContainer position="top-center" />
-                </>
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/admin"
-            element={
-              <AdminRoute>
-                <AdminDashboard songs={songs} setSongs={setSongs} />
-              </AdminRoute>
-            }
-          />
-        </Routes>
-
-        {/* Conditionally render PlayerBottom - MOVED INSIDE PROVIDER */}
-        {!hidePlayer && (
-          <PlayerBottom
-            songs={songs}
-            currentIndex={currentIndex}
-            setCurrentIndex={setCurrentIndex}
-            playToggle={playToggle}
-            setPlayToggle={setPlayToggle}
-          />
-        )}
-      </AddToPlaylistFromExtendedPlayer.Provider>
-
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        pauseOnHover
-        draggable
-      />
-    </div>
+        </div>
+      </fetchChangelog.Provider>
+    </ApiContext.Provider>
   );
 };
 

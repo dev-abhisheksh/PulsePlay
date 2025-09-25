@@ -1,22 +1,28 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { FaArrowAltCircleLeft, FaPlay, FaArrowAltCircleRight, FaPause, FaAlignJustify, FaAlignRight, FaHome, FaSearch, FaMusic, FaDownload } from "react-icons/fa";
 import { MdPlaylistAddCheckCircle, MdPlaylistAddCircle, MdLoop, MdOutlineShuffle, MdAdminPanelSettings } from "react-icons/md";
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { ApiContext } from '../../context/ApiContext';
+import { fetchChangelog } from '../../context/fetchChangelog';
 
 const Navbar = () => {
-
+    // const changelogs = useContext(fetchChangelog)
     const [menuBarToggle, setMenuBarToggle] = useState(true)
     const [user, setUser] = useState(null)
     const navigate = useNavigate()
     const [isAdmin, setIsAdmin] = useState(false)
-    const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/
+    const pp = useContext(ApiContext)
+    const [changelogs, setChangelogs] = useState([])
+
+
+
     const handleLogout = async () => {
         await axios.get(`${pp}/api/logout`, { withCredentials: true })
         navigate("/login");
-        toast.success("Logged out")
+        toast.success("Logged out", { autoClose: 750 });
     }
 
     useEffect(() => {
@@ -32,6 +38,20 @@ const Navbar = () => {
         }
 
         fetchUsers()
+    }, [])
+
+    useEffect(() => {
+        const fetchChangelogs = async () => {
+            try {
+                const res = await axios.get(`${pp}/api/get`, { withCredentials: true });
+                console.log(res.data)
+                setChangelogs(res.data);
+            } catch (err) {
+                toast.error("Failed to fetch changelogs");
+            }
+        };
+
+        fetchChangelogs()
     }, [])
 
     return (
@@ -78,6 +98,31 @@ const Navbar = () => {
                             </Link>
                         </div>) : ""}
                     </ul>
+
+                    <div>
+                        <h1 className="text-white font-bold mb-1 pl-5">ChangeLogs</h1>
+                        <div className="w-full flex flex-col h-[16vh] overflow-y-auto scrollbar-thin scrollbar-thumb-[#FFA500]/50 scrollbar-track-[#393939]/20 p-2">
+
+                            {changelogs && changelogs.length > 0 ? (
+                                changelogs.map((log) => (
+                                    <div key={log._id} className="bg-[#393939] px-2 py-1 rounded-md mb-2 shadow-sm">
+                                        <h1 className="text-orange-500 font-semibold text-[16px]">{log.title}</h1>
+                                        <p className="text-white text-[12px]">{log.description}</p>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-gray-400 pl-4">No changelogs</p>
+                            )}
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <div className='pl-4'>
+                            <h1 className='text-white font-bold '>Contact<p className='text-[12px] text-orange-500'> PulsePlayhelp@gmail.com</p></h1>
+                        </div>
+                    </div>
+
 
                     <div className='px-3 flex justify-between items-center'>
                         <h1 className='text-white text-2xl'>{user ? user.username : "user"}</h1>

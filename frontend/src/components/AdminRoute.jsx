@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
+import { ApiContext } from "../context/ApiContext";
 
 const AdminRoute = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
- const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/
+  const pp = useContext(ApiContext)
   useEffect(() => {
     const checkAdmin = async () => {
       try {

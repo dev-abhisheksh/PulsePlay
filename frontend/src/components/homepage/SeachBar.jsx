@@ -1,8 +1,9 @@
 // SearchBar.jsx
 import axios from 'axios'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState ,useContext} from 'react'
 import { FaSearch } from 'react-icons/fa'
 import { IoFilterCircle, IoListCircle } from "react-icons/io5";
+import { ApiContext } from '../../context/ApiContext';
 
 const SearchBar = ({ onSongSelect, currentIndex, songs = [], isFilterGenreToggle, setIsFilterGenreToggle }) => {
     const [searchValue, setSearchValue] = useState('')
@@ -11,7 +12,7 @@ const SearchBar = ({ onSongSelect, currentIndex, songs = [], isFilterGenreToggle
     const currentSong = songs[currentIndex] || {};
     const [isFilterSelected, setIsFilterSelected] = useState(false)
 
-    const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/
+    const pp = useContext(ApiContext)
 
     const GenreToggle = () => {
         setIsFilterGenreToggle((prev) => !prev);

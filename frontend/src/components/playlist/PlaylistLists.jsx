@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { MdDelete, MdRefresh, MdDriveFileRenameOutline, MdCancel, MdCheck } from "react-icons/md";
+import { ApiContext } from "../../context/ApiContext";
 
 const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, setSongs }) => {
     const [playlists, setPlaylists] = useState([]);
@@ -10,7 +11,7 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, s
     const [renamePlaylistId, setRenamePlaylistId] = useState(null);
     const [newName, setNewName] = useState("");
 
-    const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/
+    const pp = useContext(ApiContext)
 
     // Handle renaming a playlist
     const handleRename = async (playlistId) => {

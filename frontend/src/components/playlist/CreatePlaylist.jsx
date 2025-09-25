@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect ,useContext} from "react";
 import axios from "axios";
+import { ApiContext } from "../../context/ApiContext";
 
 const CreatePlaylist = ({ refreshPlaylists }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [playlistName, setPlaylistName] = useState("");
   const [user, setUser] = useState(null);
   const [havePlaylist, setHavePlaylist] = useState(false);
-  const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/
+ const pp = useContext(ApiContext)
   const toggleModal = () => setModalOpen(!modalOpen);
 
   useEffect(() => {

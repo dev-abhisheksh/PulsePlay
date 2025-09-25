@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import axios from 'axios';
 import Playlist from '../components/playlist/Playlist';
 import CreatePlaylist from '../components/playlist/CreatePlaylist';
 import PlaylistLists from '../components/playlist/PlaylistLists';
 import PlayerBottom from '../components/homepage/PlayerBottom';
 import Navbar from '../components/homepage/Navbar';
+import { ApiContext } from '../context/ApiContext';
 
 const PlaylistPage = ({ songs, currentIndex, setCurrentIndex }) => {
     const [loadingSongs, setLoadingSongs] = useState(false); // Set to false since songs come from props
     const [refreshPlaylists, setRefreshPlaylists] = useState(false);
     const [playToggle, setPlayToggle] = useState(false);
-    const localhost = "http://localhost:4000";
+    const pp = useContext(ApiContext)
 
 
     const refreshHandler = () => setRefreshPlaylists((prev) => !prev);

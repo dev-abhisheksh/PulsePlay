@@ -1,5 +1,5 @@
 // ExplorePage.jsx
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState,useContext } from 'react'
 import Navbar from '../components/homepage/Navbar'
 import PlayerBottom from '../components/homepage/PlayerBottom'
 import Grid from '../components/homepage/Grid'
@@ -7,12 +7,13 @@ import SearchBar from '../components/homepage/SeachBar'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import GenreFilter from '../components/homepage/GenreFilter'
+import { ApiContext } from '../context/ApiContext'
 
 const ExplorePage = ({ songs, currentIndex, setCurrentIndex }) => {
   const [searchResults, setSearchResults] = useState([])
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
-  const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/
+  const pp = useContext(ApiContext)
   const [isFilterGenreToggle, setIsFilterGenreToggle] = useState(false)
   const [selectedGenre, setSelectedGenre] = useState(null)
 

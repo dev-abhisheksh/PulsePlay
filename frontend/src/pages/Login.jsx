@@ -1,15 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { ApiContext } from '../context/ApiContext';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [passVisible, setPassVisible] = useState(false);
     const navigate = useNavigate();
-    const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/
+    const pp = useContext(ApiContext)
     const handlePassVisibility = () => {
         setPassVisible(!passVisible);
     }
@@ -21,7 +22,7 @@ const Login = () => {
                 { username, password },
                 { withCredentials: true }
             );
-            toast.success("Logged in")
+            toast.success("Logged in", { autoClose: 750 });
             navigate("/")
         } catch (error) {
             console.log("Login error:", error);

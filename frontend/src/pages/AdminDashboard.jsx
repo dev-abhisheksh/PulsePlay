@@ -1,14 +1,16 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { FaUserEdit, FaAlignJustify, FaAlignRight, FaHome, FaSearch, FaMusic, FaDownload, FaEye, FaEyeSlash } from "react-icons/fa";
+import React, { useEffect, useState, useRef, useContext } from 'react';
+import { FaUserEdit, FaAlignJustify, FaAlignRight, FaHome, FaSearch, FaMusic, FaDownload, FaEye, FaEyeSlash, } from "react-icons/fa";
 import { TiEdit } from "react-icons/ti";
 import { Link } from 'react-router-dom';
 import { IoAddCircleOutline } from "react-icons/io5";
-import { MdOutlineSettingsSuggest, MdEditNotifications } from "react-icons/md";
+import { MdOutlineSettingsSuggest, MdEditNotifications, MdOutlineNoteAdd } from "react-icons/md";
 import { AiOutlineUserDelete, AiFillEdit } from "react-icons/ai";
-
+import { FaNoteSticky } from "react-icons/fa6";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { ApiContext } from '../context/ApiContext';
+// import { ChangeLogContext } from '../context/fetchChangelog';
 
 
 const AdminDashboard = ({ songs, setSongs }) => {
@@ -28,8 +30,12 @@ const AdminDashboard = ({ songs, setSongs }) => {
   const [isUserEditToggleOpen, setIsUserEditToggleOpen] = useState(false)
   const [isSongEditToggleOpen, setIsSongEditToggleOpen] = useState(false)
   const [allUsers, setAllUsers] = useState()
-
+  const [changelogs, setChangelogs] = useState()
   const [role, setRole] = useState("user")
+  const [title, setTitle] = useState("")
+  const [description, setDescription] = useState("")
+  const [toggleCreateChangelog, setToggleCreateChangelog] = useState(false)
+  const [toggleUpdateChangelog, setToggleUpdateChangelog] = useState(false)
 
   const GENRES = [
     "Phonk",
@@ -46,7 +52,65 @@ const AdminDashboard = ({ songs, setSongs }) => {
   ];
 
 
-  const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/
+  const pp = useContext(ApiContext)
+
+
+  const fetchChangelogs = async () => {
+    try {
+      const res = await axios.get(`${pp}/api/get`, { withCredentials: true });
+      console.log(res.data)
+      setChangelogs(res.data);
+    } catch (err) {
+      toast.error("Failed to fetch changelogs");
+    }
+  };
+
+  // ✅ Create
+  const createChangelog = async (title, description) => {
+    try {
+      const res = await axios.post(
+        `${pp}/api/create`,
+        { title, description },
+        { withCredentials: true }
+      );
+      setChangelogs([res.data, ...(changelogs || [])]);
+      toast.success("Changelog created!");
+    } catch (err) {
+      toast.error("Failed to create changelog");
+      console.log(err)
+    }
+  };
+
+  // ✅ Update
+  const updateChangelog = async (title, description) => {
+    const selectedId = changelogs[0]
+    try {
+      const res = await axios.patch(
+        `${pp}/api/update/${selectedId._id}`, // use the single changelog's ID
+        { title, description },
+        { withCredentials: true }
+      );
+      setChangelogs(res.data);
+      toast.success("Changelog updated!");
+    } catch (err) {
+      toast.error("Failed to update changelog");
+      console.log(err)
+    }
+  };
+
+
+  // ✅ Delete
+  const deleteChangelog = async () => {
+    const id = changelogs[0]._id;
+    try {
+      await axios.delete(`${pp}/api/delete/${id}`, { withCredentials: true });
+      setChangelogs(changelogs.filter((log) => log._id !== id));
+      toast.info("Changelog deleted");
+    } catch (err) {
+      toast.error("Failed to delete changelog");
+    }
+  };
+
   const fetchUsers = async () => {
     try {
       const res = await axios.get(`${pp}/api/all-users`, { withCredentials: true })
@@ -290,9 +354,9 @@ const AdminDashboard = ({ songs, setSongs }) => {
 
         {/* Add/Delete & Random */}
         <div className='flex justify-center gap-5'>
-          <div className='h-55 w-50 rounded-md'>
+          <div className='h-50 w-50 rounded-md'>
             <div className='flex flex-col h-full w-full justify-between py-2 px-2 gap-2'>
-              <div><h1 className='text-xl font-bold text-white'>Best Random 4u</h1></div>
+              {/* <div><h1 className='text-xl font-bold text-white'>Best Random 4u</h1></div> */}
               <div className='h-42 w-45 bg-white rounded-md'>
                 <div className='w-full h-full overflow-hidden object-cover rounded-md border border-white'>
                   {songs.length > 0 && songs[random] ? (<img src={songs[random].coverImage} />) : "Loading"}
@@ -301,19 +365,23 @@ const AdminDashboard = ({ songs, setSongs }) => {
             </div>
           </div>
 
-          <div className='flex flex-col justify-center gap-5'>
-            <div className='border h-20 w-30 rounded-md border-white bg-white flex justify-center items-center'>
-              <IoAddCircleOutline onClick={handleAddSongToggle} size={60} className='text-green-500' />
+          <div className='flex flex-col py-2 gap-2'>
+            <div className='border h-20 w-30 rounded-md border-white bg-[#2A2738] flex justify-center items-center'>
+              <div className='p-[1px] rounded-full bg-white cursor-pointer'>
+                <IoAddCircleOutline onClick={handleAddSongToggle} size={60} className='text-green-500' />
+              </div>
             </div>
-            {songs.length > 0 && (
-              <div className='border h-20 w-30 rounded-md border-white bg-white flex justify-center items-center'>
-                <MdOutlineSettingsSuggest
-                  size={60}
+
+            <div className='border h-20 w-30 rounded-md border-white bg-[#2A2738] flex justify-center items-center'>
+              <div className='p-1 rounded-md bg-white'>
+                <FaNoteSticky
+                  size={50}
                   className='text-red-500 cursor-pointer'
-                  onClick={() => openEditModal(songs[0])} // Or pass the song you want
+
                 />
               </div>
-            )}
+            </div>
+
 
           </div>
         </div>
@@ -553,7 +621,92 @@ const AdminDashboard = ({ songs, setSongs }) => {
           </div>
         )}
 
+        <div className='flex justify-center'>
+          <div className='w-[90%] bg-[#393939] rounded-md flex flex-col justify-center py-2 items-center gap-3'>
+            <div className='flex flex-col gap-5 pb-4 w-[90%]'>
+              <h1 className='text-white font-bold text-[20px]'>ChangeLog Management</h1>
 
+
+
+              <div className='flex justify-center gap-3 w-full  '>
+                <button onClick={() => setToggleCreateChangelog(!toggleCreateChangelog)} className='border px- py-1 px-2 font-bold text-white rounded-md bg-green-400'>Create</button>
+                <button onClick={() => setToggleUpdateChangelog(!toggleUpdateChangelog)} className='border px- py-1 px-2 font-bold text-white rounded-md bg-orange-400'>Update</button>
+                <button onClick={deleteChangelog} className='border px- py-1 px-2 font-bold text-white rounded-md bg-red-400'>Delete</button>
+                <button onClick={fetchChangelogs} className='border px- py-1 px-2 font-bold text-white rounded-md bg-yellow-400'>Fetch</button>
+              </div>
+
+
+
+              <div className="bg-gray-100 p-4 rounded-lg shadow-md max-h-96 overflow-y-auto w-full">
+                {changelogs && changelogs.length > 0 ? (
+                  changelogs.map((log) => (
+                    <div
+                      key={log._id}
+                      className="bg-white p-4 rounded-md mb-3 shadow-sm hover:shadow-md transition-shadow duration-300"
+                    >
+                      <h1 className="text-orange-500 font-semibold text-lg">{log.title}</h1>
+                      <p className="text-gray-600 mt-1 pl-3" >{log.description}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-700 font-medium text-center">No changelogs available</p>
+                )}
+              </div>
+
+
+
+              {toggleUpdateChangelog && (
+                <div className='bg-[#393939 flex flex-col gap-2 w-full border-t-2 border-orange-500 pt-3'>
+                  <h1 className='text-white font-bold '>Update ChangeLog</h1>
+                  <div className='flex flex-col gap-1'>
+                    <input
+                      type="text"
+                      className='outline-0 border-black bg-[#575656] h-8 rounded-md text-white font-bold px-3 '
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder='Title'
+                    />
+
+                    <input
+                      type="text"
+                      className='outline-0 border-black bg-[#575656] h-8 rounded-md text-white font-bold px-3 '
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder='Description'
+                    />
+
+                  </div>
+                  <button onClick={() => updateChangelog(title, description)} className='text-white bg-green-400 rounded-md font-bold'>Proceed</button>
+
+                </div>
+              )}
+
+
+              {toggleCreateChangelog && (
+                <div className='bg-[#393939 flex flex-col gap-2 w-full border-t-2 border-orange-500 pt-3'>
+                  <h1 className='text-white font-bold '>Create ChangeLog</h1>
+                  <div className='flex flex-col gap-1'>
+                    <input
+                      type="text"
+                      className='outline-0 border-black bg-[#575656] h-8 rounded-md text-white font-bold px-3 '
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder='Title'
+                    />
+
+                    <input
+                      type="text"
+                      className='outline-0 border-black bg-[#575656] h-8 rounded-md text-white font-bold px-3 '
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder='Description'
+                    />
+
+                  </div>
+                  <button onClick={() => createChangelog(title, description)} className='text-white bg-green-400 rounded-md font-bold'>Create</button>
+
+                </div>
+              )}
+
+            </div>
+          </div>
+        </div>
 
 
         <div className="w-full flex justify-center items-center py-5">
@@ -591,9 +744,9 @@ const AdminDashboard = ({ songs, setSongs }) => {
         </div>
 
 
-<div className='h-10 w-full'>
+        <div className='h-10 w-full'>
 
-</div>
+        </div>
 
 
       </div>
