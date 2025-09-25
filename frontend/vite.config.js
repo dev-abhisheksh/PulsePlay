@@ -5,7 +5,5 @@ export default defineConfig({
   plugins: [
     tailwindcss(),
   ],
-  build: {
-    outDir: 'build', // 👈 change output folder
-  },
+  // ✅ no build.outDir here, Vite will use "dist"
 })
