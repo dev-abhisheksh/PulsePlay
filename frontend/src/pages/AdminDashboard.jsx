@@ -36,6 +36,8 @@ const AdminDashboard = ({ songs, setSongs }) => {
   const [description, setDescription] = useState("")
   const [toggleCreateChangelog, setToggleCreateChangelog] = useState(false)
   const [toggleUpdateChangelog, setToggleUpdateChangelog] = useState(false)
+  const [updateTitleValue, setUpdateTitleValue] = useState("")
+  const [updateDescValue, setUpdateDescValue] = useState("")
 
   const GENRES = [
     "Phonk",
@@ -58,8 +60,9 @@ const AdminDashboard = ({ songs, setSongs }) => {
   const fetchChangelogs = async () => {
     try {
       const res = await axios.get(`${pp}/api/get`, { withCredentials: true });
-      console.log(res.data)
       setChangelogs(res.data);
+      setUpdateTitleValue(res.data[0].title)
+      setUpdateDescValue(res.data[0].description)
     } catch (err) {
       toast.error("Failed to fetch changelogs");
     }
@@ -268,7 +271,10 @@ const AdminDashboard = ({ songs, setSongs }) => {
     }
   };
 
-  const random = songs.length > 0 ? Math.floor(Math.random() * songs.length) : "null";
+  const visibleSongs = songs.filter(song => !song.hidden);
+  const random = visibleSongs.length > 0 ? Math.floor(Math.random() * visibleSongs.length) : null;
+
+
 
   return (
     <div className="w-screen bg-[#1A1824] flex flex-col pb-5">
@@ -660,21 +666,23 @@ const AdminDashboard = ({ songs, setSongs }) => {
                   <h1 className='text-white font-bold '>Update ChangeLog</h1>
                   <div className='flex flex-col gap-1'>
                     <input
+                      value={updateTitleValue}
                       type="text"
                       className='outline-0 border-black bg-[#575656] h-8 rounded-md text-white font-bold px-3 '
-                      onChange={(e) => setTitle(e.target.value)}
+                      onChange={(e) => setUpdateTitleValue(e.target.value)}
                       placeholder='Title'
                     />
 
                     <input
+                      value={updateDescValue}
                       type="text"
                       className='outline-0 border-black bg-[#575656] h-8 rounded-md text-white font-bold px-3 '
-                      onChange={(e) => setDescription(e.target.value)}
+                      onChange={(e) => setUpdateDescValue(e.target.value)}
                       placeholder='Description'
                     />
 
                   </div>
-                  <button onClick={() => updateChangelog(title, description)} className='text-white bg-green-400 rounded-md font-bold'>Proceed</button>
+                  <button onClick={() => updateChangelog(updateTitleValue, updateDescValue)} className='text-white bg-green-400 rounded-md font-bold'>Proceed</button>
 
                 </div>
               )}
@@ -685,6 +693,7 @@ const AdminDashboard = ({ songs, setSongs }) => {
                   <h1 className='text-white font-bold '>Create ChangeLog</h1>
                   <div className='flex flex-col gap-1'>
                     <input
+
                       type="text"
                       className='outline-0 border-black bg-[#575656] h-8 rounded-md text-white font-bold px-3 '
                       onChange={(e) => setTitle(e.target.value)}
@@ -692,6 +701,7 @@ const AdminDashboard = ({ songs, setSongs }) => {
                     />
 
                     <input
+
                       type="text"
                       className='outline-0 border-black bg-[#575656] h-8 rounded-md text-white font-bold px-3 '
                       onChange={(e) => setDescription(e.target.value)}

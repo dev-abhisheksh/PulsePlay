@@ -16,7 +16,7 @@ router.get("/all-users", verifyUser, verifyAdmin, usersCount)
 router.patch("/role-update", verifyUser, verifyAdmin, updateRole)
 router.delete("/delete-user", verifyUser, verifyAdmin, deleteUser)
 router.post("/create", verifyUser,verifyAdmin, addChangelog)
-router.get("/get", verifyUser, verifyAdmin, getChangelog)
+router.get("/get", verifyUser, getChangelog)
 router.patch("/update/:id", verifyUser, verifyAdmin, updateChangelog)
 router.delete("/delete/:id", verifyUser, verifyAdmin, deleteChangelog)
 

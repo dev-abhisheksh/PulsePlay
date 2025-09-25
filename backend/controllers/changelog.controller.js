@@ -30,7 +30,7 @@ const updateChangelog = async (req, res) => {
         const { id } = req.params;
         const { title, description } = req.body;
 
-        if (!title || !description) {
+        if (!title && !description) {
             return res.status(400).json({ message: "Both fields are required" })
         }
 
