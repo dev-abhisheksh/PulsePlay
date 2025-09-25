@@ -34,8 +34,8 @@ const App = () => {
 
   const hidePlayer =
     location.pathname === "/login" ||
-    location.pathname === "/register" ||
-    location.pathname === "/admin";
+    location.pathname === "/register"
+    // location.pathname === "/admin";
 
   // const pp = "https://pulseplay-8e09.onrender.com"  /*"http://localhost:4000"*/
 
