@@ -58,21 +58,34 @@ const addSong = async (req, res) => {
 const getSongs = async (req, res) => {
     try {
 
-        const songsCache = await client.get("allsongs")
+        const songsCache = await client.get("allsongs");
         if (songsCache) {
             return res.status(200).json({
-                message: "All songs fetched",
-                songs: JSON.parse(songsCache)
-            })
+                message: "All songs fetched (from cache)",
+                songs: JSON.parse(songsCache),
+            });
         }
-        const songs = await Song.find().sort({ createdAt: -1 }).select("-createdAt -updatedAt")
 
-        await client.set("allsongs", JSON.stringify(songs))
-        return res.status(200).json({ songs })
+        console.time("MongoDB fetch");
+        const songs = await Song.find()
+            .sort({ createdAt: -1 })
+            .select("-createdAt -updatedAt");
+        console.timeEnd("MongoDB fetch");
+
+
+        await client.set("allsongs", JSON.stringify(songs), "EX", 3600);
+
+        console.timeEnd("getSongs");
+        return res.status(200).json({
+            message: "All songs fetched (from DB)",
+            songs,
+        });
     } catch (error) {
-        return res.status(500).json({ message: "Failed to fetch the songs" })
+        console.error(" Error in getSongs:", error);
+        return res.status(500).json({ message: "Failed to fetch the songs" });
     }
-}
+};
+
 
 const searchSongs = async (req, res) => {
     try {
