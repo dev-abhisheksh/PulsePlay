@@ -1,6 +1,7 @@
 import cloudinary from "cloudinary"
 import { Song } from "../models/song.model.js"
 import { streamUpload } from "../middlewares/upload.middleware.js";
+import { client } from "../utils/redisClient.js";
 
 const ALLOWED_GENRES = [
     "Phonk",
@@ -56,8 +57,17 @@ const addSong = async (req, res) => {
 
 const getSongs = async (req, res) => {
     try {
+
+        const songsCache = await client.get("allsongs")
+        if (songsCache) {
+            return res.status(200).json({
+                message: "All songs fetched",
+                songs: JSON.parse(songsCache)
+            })
+        }
         const songs = await Song.find().sort({ createdAt: -1 }).select("-createdAt -updatedAt")
 
+        await client.set("allsongs", songs)
         return res.status(200).json({ songs })
     } catch (error) {
         return res.status(500).json({ message: "Failed to fetch the songs" })
