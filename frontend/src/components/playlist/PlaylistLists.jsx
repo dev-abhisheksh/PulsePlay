@@ -105,6 +105,7 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, s
     };
 
     useEffect(() => {
+        if(!user) return
         fetchPlaylists();
     }, [refreshTrigger]);
 
