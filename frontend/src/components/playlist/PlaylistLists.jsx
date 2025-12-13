@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { MdDelete, MdRefresh, MdDriveFileRenameOutline, MdCancel, MdCheck } from "react-icons/md";
@@ -45,6 +45,7 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, s
     };
 
     // Fetch playlists
+    // Fetch playlists
     const fetchPlaylists = async () => {
         setLoading(true);
         try {
@@ -60,11 +61,21 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, s
 
             setPlaylists(filteredPlaylists);
         } catch (error) {
+            if (error.response?.status === 401) {
+                console.warn("User not logged in, skipping playlist fetch");
+                setPlaylists([]); // clear playlists to avoid UI errors
+                return;
+            }
             console.error("Failed to fetch playlists", error);
         } finally {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        fetchPlaylists(); // no user check needed
+    }, [refreshTrigger]);
+
 
     const handleSuffle = () => setSuffleOn(!suffleOn);
 
@@ -105,7 +116,7 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, s
     };
 
     useEffect(() => {
-        if(!user) return
+        if (!user) return
         fetchPlaylists();
     }, [refreshTrigger]);
 
