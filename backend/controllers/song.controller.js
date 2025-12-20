@@ -54,63 +54,33 @@ const addSong = async (req, res) => {
     }
 };
 
-
-// import { client } from "../config/redis.js";
-// import { Song } from "../models/song.model.js";
-
 const getSongs = async (req, res) => {
     try {
-        console.time("⏱️ Total Request Time");
+        const cacheKey = "allsongs";
 
-        // ✅ Check Redis connection
-        if (!client.status || client.status !== "ready") {
-            console.warn("⚠️ Redis not connected, using MongoDB directly");
-        }
-
-        // ✅ 1. Try fetching from Redis cache
-        console.time("Redis GET");
-        const songsCache = await client.get("allsongs");
-        console.timeEnd("Redis GET");
-
-        if (songsCache) {
-            console.timeEnd("⏱️ Total Request Time");
-            console.log("✅ Served from Redis cache");
+        const cached = await client.get(cacheKey);
+        if (cached) {
             return res.status(200).json({
                 source: "cache",
-                songs: JSON.parse(songsCache),
+                songs: JSON.parse(cached),
             });
         }
 
-        // ✅ 2. Fetch from MongoDB if not cached
-        console.time("MongoDB Fetch");
         const songs = await Song.find()
             .sort({ createdAt: -1 })
-            .select("title artist cover duration"); // only send necessary fields
-        console.timeEnd("MongoDB Fetch");
+            .select("title artist coverImage audioUrl");
 
-        // ✅ 3. Cache the result (1 hour TTL)
-        console.time("Redis SET");
-        await client.set("allsongs", JSON.stringify(songs), "EX", 3600);
-        console.timeEnd("Redis SET");
-
-        console.log("💾 Cached new songs list in Redis");
-
-        console.timeEnd("⏱️ Total Request Time");
+        await client.set(cacheKey, JSON.stringify(songs), "EX", 3600);
 
         return res.status(200).json({
             source: "database",
             songs,
         });
     } catch (error) {
-        console.error("❌ Error in getSongs:", error);
-        return res.status(500).json({
-            message: "Failed to fetch songs",
-            error: error.message,
-        });
+        console.error("getSongs error:", error);
+        res.status(500).json({ message: "Failed to fetch songs" });
     }
 };
-
-
 
 
 
