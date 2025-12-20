@@ -46,7 +46,7 @@ const addSong = async (req, res) => {
             audioUrl: audioUpload.secure_url,
             coverImage: coverUpload.secure_url
         });
-
+        await client.del("allsongs")
         return res.status(201).json({ message: "Song added successfully", song });
     } catch (error) {
         console.log("Error adding song: ", error);
@@ -230,7 +230,7 @@ const editSong = async (req, res) => {
 
         const updatedSong = await Song.findByIdAndUpdate(id, { $set: updateData }, { new: true });
         if (!updatedSong) return res.status(404).json({ message: "Song not found" });
-
+        await client.del("allsongs")
         res.status(200).json({ message: "Song updated successfully", song: updatedSong });
     } catch (err) {
         console.error("Error editing song:", err);
