@@ -1,6 +1,6 @@
 // SearchBar.jsx
 import axios from 'axios'
-import React, { useEffect, useRef, useState ,useContext} from 'react'
+import React, { useEffect, useRef, useState, useContext } from 'react'
 import { FaSearch } from 'react-icons/fa'
 import { IoFilterCircle, IoListCircle } from "react-icons/io5";
 import { ApiContext } from '../../context/ApiContext';
@@ -56,7 +56,7 @@ const SearchBar = ({ onSongSelect, currentIndex, songs = [], isFilterGenreToggle
     return (
         <div
             ref={boxRef}
-            className="relative h-[10vh] w-full bg-[#1A1824] flex items-center justify-center gap-3 px-3"
+            className="relative h-[8vh] w-full bg-[#1A1824] flex items-center justify-center gap-3 px-3"
         >
             <input
                 type="text"
@@ -65,24 +65,81 @@ const SearchBar = ({ onSongSelect, currentIndex, songs = [], isFilterGenreToggle
                 onChange={(e) => setSearchValue(e.target.value)}
                 className="h-[67%] w-[80%] rounded-full bg-[#393939] text-white font-bold focus:outline-none px-4 placeholder-gray-400"
             />
-            <div onClick={GenreToggle} className="h-[70%] w-[13%] rounded-full bg-[#393939] flex justify-center items-center">
-                {isFilterSelected ? <IoFilterCircle size={70} className="text-orange-500" /> : <IoFilterCircle size={60} className="text-white" />}
+            <div onClick={GenreToggle} className=" rounded-full bg-[#393939] flex justify-center items-center">
+                {isFilterSelected ? <IoFilterCircle size={40} className="text-orange-500" /> : <IoFilterCircle size={40} className="text-white" />}
             </div>
 
             {results.length > 0 && (
-                <div className="absolute top-[10vh] left-[2.%] bg-[#494848] w-[95%] p-3 rounded-md text-white max-h-[200px] overflow-y-auto shadow-lg border-2 border-white flex flex-col gap-2" >
-                    {results.map((song) => (
+                <div
+                    className="
+            absolute top-[10vh] left-[2.5%] 
+            bg-[#373737] w-[95%] p-3 
+            rounded-md text-white 
+            max-h-[200px] overflow-y-auto 
+            shadow-lg border-2 border-gray-700 
+            flex flex-col gap-2
+            animate-fadeIn
+          "
+                >
+                    {results.map((song, index) => (
                         <h1
                             key={song._id}
-                            onClick={() => onSongSelect(song)}  // 👈 HERE
-                            className="cursor-pointer hover:bg-gray-700 px-2 py-1 flex items-center gap-3 border-1 border-[#FD830D] rounded-md "
+                            onClick={() => onSongSelect(song)}
+                            style={{ animationDelay: `${index * 50}ms` }}
+                            className="
+                cursor-pointer hover:bg-gray-700 
+                px-2 py-1 
+                flex items-center gap-3 
+                border-[#FD830D] rounded-md
+                animate-slideIn
+                transition-colors duration-200
+              "
                         >
-                            <img src={song.coverImage} className="w-10 h-10 rounded-md object-cover border border-white" />
+                            <img
+                                src={song.coverImage}
+                                className="w-10 h-10 rounded-md object-cover border border-white"
+                                alt={song.title}
+                            />
                             {song.title} — {song.artist}
                         </h1>
                     ))}
                 </div>
             )}
+
+            <style>
+                {`
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+              transform: translateY(-10px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+
+          @keyframes slideIn {
+            from {
+              opacity: 0;
+              transform: translateX(-20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateX(0);
+            }
+          }
+
+
+          .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out;
+          }
+
+          .animate-slideIn {
+            animation: slideIn 0.4s ease-out both;
+          }
+        `}
+            </style>
         </div>
     )
 }

@@ -59,16 +59,16 @@ const App = () => {
   useEffect(() => {
     const fetchOrCreatePlaylist = async () => {
       try {
-        console.log("Fetching user playlist...");
+        // console.log("Fetching user playlist...");
         const res = await axios.get(`${pp}/api/playlist`, {
           withCredentials: true,
         });
 
-        console.log("Playlist response:", res.data);
+        // console.log("Playlist response:", res.data);
 
         if (res.data.playlists && res.data.playlists.length > 0) {
           const pl = res.data.playlists[0]; // use first playlist
-          console.log("Found existing playlist:", pl);
+          // console.log("Found existing playlist:", pl);
           setPlaylistId(pl._id);
 
           // Build state { songId: true }
@@ -79,7 +79,7 @@ const App = () => {
             });
           }
           setPlaylistState(state);
-          console.log("Playlist state set:", state);
+          // console.log("Playlist state set:", state);
         } else {
           console.log("No playlist found, creating new one...");
           // Create a new playlist if none exists
@@ -89,7 +89,7 @@ const App = () => {
             { withCredentials: true }
           );
 
-          console.log("Created new playlist:", createRes.data);
+          // console.log("Created new playlist:", createRes.data);
           setPlaylistId(createRes.data.playlist._id);
           setPlaylistState({}); // Empty state for new playlist
         }
@@ -107,7 +107,7 @@ const App = () => {
 
   // ✅ Enhanced add song function
   const handleAddSong = async (songId) => {
-    console.log("Adding song:", songId, "to playlist:", playlistId);
+    // console.log("Adding song:", songId, "to playlist:", playlistId);
 
     if (!playlistId) {
       toast.error("Please create a playlist first!", { autoClose: 800 });
@@ -121,12 +121,12 @@ const App = () => {
         { withCredentials: true }
       );
 
-      console.log("Add song response:", res.data);
+      // console.log("Add song response:", res.data);
 
       // Update local state
       setPlaylistState((prev) => {
         const newState = { ...prev, [songId]: true };
-        console.log("Updated playlist state:", newState);
+        // console.log("Updated playlist state:", newState);
         return newState;
       });
 
@@ -139,7 +139,7 @@ const App = () => {
 
   // ✅ Enhanced remove song function
   const handleRemoveSong = async (songId) => {
-    console.log("Removing song:", songId, "from playlist:", playlistId);
+    // console.log("Removing song:", songId, "from playlist:", playlistId);
 
     if (!playlistId) {
       toast.error("No playlist found!", { autoClose: 800 });
@@ -153,12 +153,12 @@ const App = () => {
         { withCredentials: true }
       );
 
-      console.log("Remove song response:", res.data);
+      // console.log("Remove song response:", res.data);
 
       // Update local state
       setPlaylistState((prev) => {
         const newState = { ...prev, [songId]: false };
-        console.log("Updated playlist state after removal:", newState);
+        // console.log("Updated playlist state after removal:", newState);
         return newState;
       });
 

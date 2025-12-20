@@ -26,7 +26,7 @@ const Grid = ({ songs, currentIndex, setCurrentIndex, selectedGenre }) => {
   return (
     <div
       className="flex flex-col items-center bg-[#1A1824] p-4 gap-4 overflow-y-auto"
-      style={{ maxHeight: "calc(9vh * 5.5 + 16px * 6.7)" }}
+      style={{ maxHeight: "calc(10vh * 5.5 + 16px * 6.7)" }}
     >
       {sortedSongs.map((song, index) => {
         // Check if this song is currently playing by comparing with original array

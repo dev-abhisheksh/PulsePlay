@@ -34,7 +34,7 @@ const Navbar = () => {
                 setIsAdmin(true)
             }
 
-            console.log(res.data)
+            // console.log(res.data)
         }
 
         fetchUsers()
@@ -44,7 +44,7 @@ const Navbar = () => {
         const fetchChangelogs = async () => {
             try {
                 const res = await axios.get(`${pp}/api/get`, { withCredentials: true });
-                console.log(res.data)
+                // console.log(res.data)
                 setChangelogs(res.data);
             } catch (err) {
                 toast.error("Failed to fetch changelogs");

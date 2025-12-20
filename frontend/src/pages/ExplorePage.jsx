@@ -22,7 +22,7 @@ const ExplorePage = ({ songs, currentIndex, setCurrentIndex }) => {
       try {
         const res = await axios.get(`${pp}/api/verify`, { withCredentials: true });
         setUser(res.data.user);
-        console.log(res.data.user);
+        // console.log(res.data.user);
       } catch (error) {
         console.log(error);
         // Optional: redirect if not authenticated

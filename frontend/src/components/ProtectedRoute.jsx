@@ -16,7 +16,7 @@ const ProtectedRoute = ({ children }) => {
         const res = await axios.get(`${pp}/api/verify`, {
           withCredentials: true
         });
-        console.log("Verification response:", res.data);
+        // console.log("Verification response:", res.data);
         setIsAuthenticated(true);
       } catch (error) {
         console.log("Verification failed:", error);
