@@ -22,7 +22,7 @@ const App = () => {
   const [playlistId, setPlaylistId] = useState(null);
   const [playlistState, setPlaylistState] = useState({});
   const [changelogs, setChangelogs] = useState([]);
-  const [pp, setpp] = useState("https://pulseplay-backend-fc2j.onrender.com" /*"http://localhost:4000"*/)
+  const [pp, setpp] = useState(/*"https://pulseplay-backend-fc2j.onrender.com"*/"http://localhost:4000")
 
 
   const location = useLocation();
@@ -176,7 +176,7 @@ const App = () => {
 
 
 
-        <div className="App flex flex-col h-screen">
+        <div className="App flex flex-col h-screen bg-[#1A1824]">
           {/* Conditionally render Navbar */}
           {!hideNav && <Navbar />}
 

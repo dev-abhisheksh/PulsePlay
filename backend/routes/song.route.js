@@ -17,6 +17,7 @@ router.post("/hide-many", verifyAdmin, hideMultipleSongs);
 
 //Common user routes,
 router.get("/songs", getSongs)
+// router.get("/admin-songs", verifyUser, verifyAdmin, getAllSongsForAdmin) 
 router.get("/search", verifyUser, searchSongs)
 
 
