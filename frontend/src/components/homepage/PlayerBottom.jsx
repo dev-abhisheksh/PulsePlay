@@ -8,7 +8,7 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
     const contextValue = useContext(AddToPlaylistFromExtendedPlayer);
     const { playlistState, handleAddSong, handleRemoveSong } = contextValue || {};
 
-    
+
 
     const [playMode, setPlayMode] = useState("playlist"); // "single" | "playlist"
     const [duration, setDuration] = useState(0);
@@ -49,10 +49,10 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
         const isInPlaylist = playlistState[currentSong._id];
 
         if (isInPlaylist) {
-           
+
             handleRemoveSong(currentSong._id);
         } else {
-           
+
             handleAddSong(currentSong._id);
         }
     };
@@ -205,11 +205,11 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
                                     {currentSong.title || "Loading"}
                                 </h1>
                                 {/* ✅ Fixed: Added onClick handler and corrected property access */}
-                                <div 
+                                <div
                                     onClick={handlePlaylistToggle}
                                     className="transition-transform duration-200 hover:scale-110 cursor-pointer"
                                 >
-                                    
+
                                     {playlistState[currentSong._id] ? (
                                         <MdPlaylistAddCheckCircle size={28} className="text-green-400" />
                                     ) : (
@@ -222,31 +222,35 @@ const PlayerBottom = ({ songs = [], currentIndex = 0, setCurrentIndex, playToggl
                             </h2>
                         </div>
 
-                        <div>
-                            <div className='h-2 bg-gray-600 w-full max-w-80 rounded-md overflow-hidden'>
+                        <div className="w-full px-3">
+                            <div
+                                className="h-2 bg-gray-600 w-full rounded-md cursor-pointer overflow-hidden"
+                                onClick={(e) => {
+                                    if (!audioRef.current) return;
+                                    const bar = e.currentTarget;
+                                    const rect = bar.getBoundingClientRect();
+                                    const clickX = e.clientX - rect.left;
+                                    const newTime = (clickX / rect.width) * duration;
+                                    audioRef.current.currentTime = newTime;
+                                    setCurrentTime(newTime);
+                                }}
+                            >
                                 <div
-                                    className="h-2 bg-gray-600 w-80 rounded-md cursor-pointer relative"
-                                    onClick={(e) => {
-                                        if (!audioRef.current) return;
-                                        const bar = e.currentTarget;
-                                        const clickX = e.nativeEvent.offsetX;
-                                        const barWidth = bar.clientWidth;
-                                        const newTime = (clickX / barWidth) * duration;
-                                        audioRef.current.currentTime = newTime;
-                                        setCurrentTime(newTime);
-                                    }}
-                                >
-                                    <div
-                                        className="h-2 bg-[#FD830D] rounded-md transition-all duration-100 ease-out"
-                                        style={{ width: `${progress}%` }}
-                                    />
-                                </div>
+                                    className="h-full bg-[#FD830D] transition-all duration-100 ease-out"
+                                    style={{ width: `${progress}%` }}
+                                />
                             </div>
-                            <div className='flex justify-between px-3 py-1'>
-                                <p className="text-white font-bold text-sm">{formatTime(currentTime)}</p>
-                                <p className="text-white font-bold text-sm">{formatTime(duration)}</p>
+
+                            <div className="flex justify-between py-1">
+                                <p className="text-white font-bold text-sm">
+                                    {formatTime(currentTime)}
+                                </p>
+                                <p className="text-white font-bold text-sm">
+                                    {formatTime(duration)}
+                                </p>
                             </div>
                         </div>
+
                     </div>
 
                     {/* Controls */}

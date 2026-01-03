@@ -22,7 +22,7 @@ const App = () => {
   const [playlistId, setPlaylistId] = useState(null);
   const [playlistState, setPlaylistState] = useState({});
   const [changelogs, setChangelogs] = useState([]);
-  const [pp, setpp] = useState(/*"https://pulseplay-backend-fc2j.onrender.com"*/ "http://localhost:4000")
+  const [pp, setpp] = useState("https://pulseplay-backend-fc2j.onrender.com" /*"http://localhost:4000"*/)
 
 
   const location = useLocation();
