@@ -183,10 +183,12 @@ const AdminDashboard = ({ songs, setSongs }) => {
 
   const handleSongVisibility = async (songId, currentlyHidden) => {
     try {
-      // Optimistically update the UI immediately
+      // optimistic update
       setSongs(prev =>
         prev.map(song =>
-          song._id === songId ? { ...song, hidden: !currentlyHidden } : song
+          song._id === songId
+            ? { ...song, hidden: !currentlyHidden }
+            : song
         )
       );
 
@@ -198,14 +200,21 @@ const AdminDashboard = ({ songs, setSongs }) => {
         toast.success("Song is hidden");
       }
 
-      // Refetch all songs to stay in sync with server
-      const res = await axios.get(`${pp}/api/song/songs`);
-      setSongs(res.data.songs);
+      // ✅ NO refetch from public endpoint
     } catch (error) {
-      console.log(error);
       toast.error("Failed to change visibility");
+
+      // rollback
+      setSongs(prev =>
+        prev.map(song =>
+          song._id === songId
+            ? { ...song, hidden: currentlyHidden }
+            : song
+        )
+      );
     }
   };
+
 
   useEffect(() => {
     const fetchUsers = async () => {

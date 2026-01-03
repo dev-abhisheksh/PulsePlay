@@ -4,12 +4,15 @@ import App from './App.jsx'
 import "./index.css";
 import { BrowserRouter } from 'react-router-dom';
 import { PlayerProvider } from './context/PlayerContext';
+import { AuthProvider } from './context/AuthContext.jsx';
 
 
 createRoot(document.getElementById('root')).render(
     <BrowserRouter>
         <PlayerProvider>
-            <App />
+            <AuthProvider>
+                <App />
+            </AuthProvider>
         </PlayerProvider>
     </BrowserRouter>
 )

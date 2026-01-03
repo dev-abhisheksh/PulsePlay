@@ -10,7 +10,15 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, s
     const [suffleOn, setSuffleOn] = useState(false);
     const [renamePlaylistId, setRenamePlaylistId] = useState(null);
     const [newName, setNewName] = useState("");
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
+    const { user, authChecked } = useContext(AuthContext);
+
+    useEffect(() => {
+        if (!authChecked) return;
+        if (!user) return;
+
+        fetchPlaylists();
+    }, [authChecked, user, refreshTrigger]);
 
     const checkAuth = async () => {
         try {
@@ -18,6 +26,8 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, s
             setIsAuthenticated(true);
         } catch {
             setIsAuthenticated(false);
+        } finally {
+            setAuthChecked(true); // 🔑 THIS IS THE KEY
         }
     };
 
@@ -69,28 +79,18 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, s
                 withCredentials: true,
             });
 
-            // Filter out hidden songs
             const filteredPlaylists = res.data.playlists.map((playlist) => ({
                 ...playlist,
-                songs: playlist.songs.filter((song) => !song.hidden),
+                songs: playlist.songs.filter(song => !song.hidden),
             }));
 
             setPlaylists(filteredPlaylists);
         } catch (error) {
-            if (error.response?.status === 401) {
-                console.warn("User not logged in, skipping playlist fetch");
-                setPlaylists([]); // clear playlists to avoid UI errors
-                return;
-            }
             console.error("Failed to fetch playlists", error);
         } finally {
             setLoading(false);
         }
     };
-
-    useEffect(() => {
-        fetchPlaylists(); // no user check needed
-    }, [refreshTrigger]);
 
 
     const handleSuffle = () => setSuffleOn(!suffleOn);

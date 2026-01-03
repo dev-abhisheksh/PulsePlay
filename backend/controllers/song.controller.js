@@ -17,7 +17,21 @@ const ALLOWED_GENRES = [
     "Country"
 ];
 
+const deleteRedisCache = async (client, patterns) => {
+    const ArrPattern = Array.isArray(patterns) ? patterns : [patterns]
 
+    for (const pattern of ArrPattern) {
+        let cursor = "0";
+        do {
+            const [next, keys] = await client.scan(cursor, "MATCH", pattern, "COUNT", 100)
+            if (keys.length > 0) {
+                await client.del(...keys)
+            }
+            cursor = next;
+        } while (cursor !== "0")
+        console.log("Cache cleared")
+    }
+}
 
 const addSong = async (req, res) => {
     try {
@@ -66,7 +80,7 @@ const getSongs = async (req, res) => {
             });
         }
 
-        const songs = await Song.find()
+        let songs = await Song.find({ hidden: false })
             .sort({ createdAt: -1 })
             .select("title artist coverImage audioUrl");
 
@@ -124,7 +138,11 @@ const hideSong = async (req, res) => {
             { new: true }
         );
         if (!song) return res.status(404).json({ message: "Song not found" });
-        return res.json({ message: "Song hidden successfully", song });
+        await deleteRedisCache(client, [
+            "allsongs*"
+        ])
+
+        return res.json({ message: "Song hidden successfully" });
     } catch (error) {
         return res.status(500).json({ message: "Failed to hide song" });
     }
@@ -140,7 +158,10 @@ const unhideSong = async (req, res) => {
             { new: true }
         );
         if (!song) return res.status(404).json({ message: "Song not found" });
-        return res.json({ message: "Song unhidden successfully", song });
+        await deleteRedisCache(client, [
+            "allsongs*"
+        ])
+        return res.json({ message: "Song unhidden successfully" });
     } catch (error) {
         return res.status(500).json({ message: "Failed to unhide song" });
     }
