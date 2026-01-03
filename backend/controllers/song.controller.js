@@ -82,7 +82,7 @@ const getSongs = async (req, res) => {
 
         let songs = await Song.find({ hidden: false })
             .sort({ createdAt: -1 })
-            .select("title artist coverImage audioUrl");
+            .select("title artist coverImage audioUrl genre");
 
         await client.set(cacheKey, JSON.stringify(songs), "EX", 3600);
 

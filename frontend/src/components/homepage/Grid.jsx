@@ -5,31 +5,35 @@ import {
 } from "react-icons/md";
 import { AddToPlaylistFromExtendedPlayer } from "../../context/AddToPlaylistFromExtendedPlayer";
 
-const Grid = ({ songs, currentIndex, setCurrentIndex, selectedGenre }) => {
+const Grid = ({ songs = [], currentIndex, setCurrentIndex, selectedGenre }) => {
   const { playlistState, handleAddSong, handleRemoveSong } = useContext(
     AddToPlaylistFromExtendedPlayer
   );
 
-  // Build O(1) lookup for original index
+  // 🔒 Soft delete safety (MANDATORY)
+  const visibleSongs = useMemo(() => {
+    return songs.filter(song => !song.hidden);
+  }, [songs]);
+
+  // O(1) lookup to original index
   const songIndexMap = useMemo(() => {
     const map = {};
-    songs?.forEach((song, index) => {
+    songs.forEach((song, index) => {
       map[song._id] = index;
     });
     return map;
   }, [songs]);
 
-  // Sort only when songs or genre changes
+  // Sort only visible songs
   const sortedSongs = useMemo(() => {
-    if (!songs) return [];
-    if (!selectedGenre) return songs;
+    if (!selectedGenre) return visibleSongs;
 
-    return [...songs].sort((a, b) => {
+    return [...visibleSongs].sort((a, b) => {
       if (a.genre === selectedGenre && b.genre !== selectedGenre) return -1;
       if (a.genre !== selectedGenre && b.genre === selectedGenre) return 1;
       return 0;
     });
-  }, [songs, selectedGenre]);
+  }, [visibleSongs, selectedGenre]);
 
   const handlePlayClick = (songId) => {
     const index = songIndexMap[songId];
@@ -38,12 +42,7 @@ const Grid = ({ songs, currentIndex, setCurrentIndex, selectedGenre }) => {
     }
   };
 
-  // Loading vs empty state
-  if (!songs) {
-    return <p className="text-white mt-4">Loading songs...</p>;
-  }
-
-  if (songs.length === 0) {
+  if (visibleSongs.length === 0) {
     return <p className="text-white mt-4">No songs available</p>;
   }
 
@@ -63,7 +62,7 @@ const Grid = ({ songs, currentIndex, setCurrentIndex, selectedGenre }) => {
             className={`w-[95%] flex items-center justify-between px-2 h-[9vh] cursor-pointer
             ${isCurrentSong ? "bg-[#2a2738] rounded-md" : ""}`}
           >
-            {/* Left: Cover + Info */}
+            {/* Left */}
             <div className="flex gap-5 items-center overflow-hidden">
               <div className="h-[55px] w-[55px] rounded-full overflow-hidden flex-shrink-0">
                 {song.coverImage ? (
@@ -82,23 +81,21 @@ const Grid = ({ songs, currentIndex, setCurrentIndex, selectedGenre }) => {
                   {song.title || "Unknown"}
                 </h1>
                 <p className="text-white text-[12px] truncate max-w-[200px]">
-                  {song.artist || "Unknown"} –{" "}
+                  {song.artist || "Unknown"}{" "}
                   <span className="text-green-400 uppercase text-[10px]">
-                    {song.genre}
+                    • {song.genre}
                   </span>
                 </p>
               </div>
             </div>
 
-            {/* Right: Playlist toggle */}
+            {/* Right */}
             <div
               onClick={(e) => {
                 e.stopPropagation();
-                if (playlistState[song._id]) {
-                  handleRemoveSong(song._id);
-                } else {
-                  handleAddSong(song._id);
-                }
+                playlistState[song._id]
+                  ? handleRemoveSong(song._id)
+                  : handleAddSong(song._id);
               }}
               className="flex-shrink-0 transition-transform duration-200 hover:scale-110 cursor-pointer"
             >

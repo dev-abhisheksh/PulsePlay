@@ -40,18 +40,84 @@ const AdminDashboard = ({ songs, setSongs }) => {
   const [updateDescValue, setUpdateDescValue] = useState("")
 
   const GENRES = [
-    "Phonk",
+    // 🎵 Global / Core
     "Pop",
     "Rock",
     "Hip-Hop",
+    "Rap",
     "R&B",
-    "Electronic",
     "Jazz",
+    "Blues",
     "Classical",
+    "Electronic",
+    "EDM",
+    "House",
+    "Techno",
+    "Trance",
+    "Dubstep",
+    "Lo-fi",
+    "Phonk",
+    "Ambient",
+    "Instrumental",
+
+    // 😔 Mood / Vibe
+    "Sad",
+    "Chill",
+    "Romantic",
+    "Workout",
+    "Party",
+    "Feel Good",
+    "Sleep",
+    "Motivational",
+
+    // 🇮🇳 Indian
+    "Bollywood",
+    "Indian Classical",
+    "Carnatic",
+    "Hindustani",
+    "Punjabi",
+    "Desi Hip-Hop",
+    "Indie Indian",
+    "Bhajan",
+    "Qawwali",
+    "Sufi",
+    "Garba",
+    "Bhangra",
+
+    // 🎌 Anime / Japanese
+    "Anime",
+    "Anime OST",
+    "J-Pop",
+    "J-Rock",
+    "Vocaloid",
+    "City Pop",
+
+    // 🌍 Regional / World
+    "K-Pop",
+    "Latin",
     "Reggae",
+    "Afrobeats",
+    "Folk",
+    "Country",
     "Metal",
-    "Country"
+    "Heavy Metal",
+    "Alternative",
+    "Indie",
+
+    // 🎮 / Media
+    "Game OST",
+    "Movie OST",
+    "Web Series OST",
+    "Background Score",
+
+    // 🧪 Experimental / Niche
+    "Synthwave",
+    "Retrowave",
+    "Drill",
+    "Trap",
+    "Experimental"
   ];
+
 
 
   const pp = useContext(ApiContext)
@@ -148,6 +214,8 @@ const AdminDashboard = ({ songs, setSongs }) => {
     setEditSongModal(true);
   };
 
+
+
   // Submit edit
   const handleEditSubmit = async (e) => {
     e.preventDefault();
@@ -170,6 +238,8 @@ const AdminDashboard = ({ songs, setSongs }) => {
       toast.success("Song updated successfully!");
       setEditSongModal(false);
       setCurrentEditSong(null);
+
+      console.log(currentEditSong)
 
       const res = await axios.get(`${pp}/api/song/songs`);
       setSongs(res.data.songs);
@@ -407,14 +477,18 @@ const AdminDashboard = ({ songs, setSongs }) => {
               className="absolute inset-0 bg-black bg-opacity-50"
               onClick={() => setEditSongModal(false)}
             ></div>
+
             <div className="relative bg-white rounded-md p-6 w-96 z-50">
-              <h1>Edit Song</h1>
+              <h1 className="text-xl font-bold mb-4">Edit Song</h1>
+
               <form onSubmit={handleEditSubmit} className="flex flex-col gap-3">
+
+                {/* TITLE */}
                 <div className="flex flex-col">
                   <label>Title</label>
                   <input
                     type="text"
-                    value={currentEditSong.title}
+                    value={currentEditSong.title || ""}
                     onChange={(e) =>
                       setCurrentEditSong({ ...currentEditSong, title: e.target.value })
                     }
@@ -423,6 +497,7 @@ const AdminDashboard = ({ songs, setSongs }) => {
                   />
                 </div>
 
+                {/* ARTIST */}
                 <div className="flex flex-col">
                   <label>Artist</label>
                   <input
@@ -436,12 +511,11 @@ const AdminDashboard = ({ songs, setSongs }) => {
                   />
                 </div>
 
-
-
+                {/* GENRE */}
                 <div className="flex flex-col">
                   <label>Genre</label>
                   <select
-                    value={currentEditSong.genre}
+                    value={currentEditSong.genre || ""}
                     onChange={(e) =>
                       setCurrentEditSong({ ...currentEditSong, genre: e.target.value })
                     }
@@ -449,17 +523,20 @@ const AdminDashboard = ({ songs, setSongs }) => {
                     required
                   >
                     {GENRES.map((g) => (
-                      <option key={g} value={g}>{g}</option>
+                      <option key={g} value={g}>
+                        {g}
+                      </option>
                     ))}
                   </select>
-
                 </div>
 
+                {/* COVER */}
                 <div className="flex flex-col">
                   <label>Cover Image</label>
                   <input ref={coverRef} type="file" accept="image/*" />
                 </div>
 
+                {/* AUDIO */}
                 <div className="flex flex-col">
                   <label>Audio File</label>
                   <input ref={audioRef} type="file" accept="audio/*" />
@@ -472,11 +549,10 @@ const AdminDashboard = ({ songs, setSongs }) => {
                   Update
                 </button>
               </form>
-
-
             </div>
           </div>
         )}
+
 
 
         {/* Upload Modal */}

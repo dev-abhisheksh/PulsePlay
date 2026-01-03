@@ -13,7 +13,84 @@ const songSchema = mongoose.Schema({
     genre: {
         type: String,
         required: true,
-        enum: ["Phonk", "Rock", "Sad", "Pop", "Hip-Hop", "Jazz"]
+        enum: [
+            "Pop",
+            "Rock",
+            "Hip-Hop",
+            "Rap",
+            "R&B",
+            "Jazz",
+            "Blues",
+            "Classical",
+            "Electronic",
+            "EDM",
+            "House",
+            "Techno",
+            "Trance",
+            "Dubstep",
+            "Lo-fi",
+            "Phonk",
+            "Ambient",
+            "Instrumental",
+
+            // 😔 Mood / Vibe
+            "Sad",
+            "Chill",
+            "Romantic",
+            "Workout",
+            "Party",
+            "Feel Good",
+            "Sleep",
+            "Motivational",
+
+            // 🇮🇳 Indian
+            "Bollywood",
+            "Indian Classical",
+            "Carnatic",
+            "Hindustani",
+            "Punjabi",
+            "Desi Hip-Hop",
+            "Indie Indian",
+            "Bhajan",
+            "Qawwali",
+            "Sufi",
+            "Garba",
+            "Bhangra",
+
+            // 🎌 Anime / Japanese
+            "Anime",
+            "J-Pop",
+            "J-Rock",
+            "Anime OST",
+            "Vocaloid",
+            "City Pop",
+
+            // 🌍 Regional / World
+            "K-Pop",
+            "Latin",
+            "Reggae",
+            "Afrobeats",
+            "Folk",
+            "Country",
+            "Metal",
+            "Heavy Metal",
+            "Alternative",
+            "Indie",
+
+            // 🎮 / Media
+            "Game OST",
+            "Movie OST",
+            "Web Series OST",
+            "Background Score",
+
+            // 🧪 Experimental / Niche
+            "Synthwave",
+            "Retrowave",
+            "Drill",
+            "Trap",
+            "Experimental"
+        ]
+
     },
     audioUrl: {
         type: String,
