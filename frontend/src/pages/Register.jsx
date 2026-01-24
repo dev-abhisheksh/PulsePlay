@@ -38,7 +38,7 @@ const Register = () => {
         setLoading(true);
 
         try {
-            const res = await axios.post("https://pulseplay-8e09.onrender.com/api/register", { 
+            const res = await axios.post("https://pulseplay-backend-fc2j.onrender.com/api/register", { 
                 username, 
                 password 
             }, {

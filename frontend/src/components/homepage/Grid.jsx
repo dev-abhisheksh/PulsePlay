@@ -10,12 +10,10 @@ const Grid = ({ songs = [], currentIndex, setCurrentIndex, selectedGenre }) => {
     AddToPlaylistFromExtendedPlayer
   );
 
-  // 🔒 Soft delete safety (MANDATORY)
   const visibleSongs = useMemo(() => {
     return songs.filter(song => !song.hidden);
   }, [songs]);
 
-  // O(1) lookup to original index
   const songIndexMap = useMemo(() => {
     const map = {};
     songs.forEach((song, index) => {
@@ -24,7 +22,6 @@ const Grid = ({ songs = [], currentIndex, setCurrentIndex, selectedGenre }) => {
     return map;
   }, [songs]);
 
-  // Sort only visible songs
   const sortedSongs = useMemo(() => {
     if (!selectedGenre) return visibleSongs;
 
@@ -60,11 +57,11 @@ const Grid = ({ songs = [], currentIndex, setCurrentIndex, selectedGenre }) => {
             key={song._id}
             onClick={() => handlePlayClick(song._id)}
             className={`w-[95%] flex items-center justify-between px-2 h-[9vh] cursor-pointer
-            ${isCurrentSong ? "bg-[#2a2738] rounded-md" : ""}`}
+            ${isCurrentSong ? "bg-[#2a2738] py-2 rounded-lg" : ""}`}
           >
             {/* Left */}
             <div className="flex gap-5 items-center overflow-hidden">
-              <div className="h-[55px] w-[55px] rounded-full overflow-hidden flex-shrink-0">
+              <div className="h-[54px] w-[54px] rounded-full border-2 border-white overflow-hidden flex-shrink-0">
                 {song.coverImage ? (
                   <img
                     src={song.coverImage}

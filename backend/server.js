@@ -13,8 +13,8 @@ const app = express();
 
 
 app.use(cors({
-  origin: "https://music-pulseplay.onrender.com"  /*"http://localhost:5173"*/, 
-  credentials: true  
+  origin: ["https://music-pulseplay.onrender.com", "http://localhost:5173"],
+  credentials: true
 }));
 
 // Middlewares

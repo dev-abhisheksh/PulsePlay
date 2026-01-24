@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { MdDelete, MdRefresh, MdDriveFileRenameOutline, MdCancel, MdCheck } from "react-icons/md";
 import { ApiContext } from "../../context/ApiContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, setSongs }) => {
     const [playlists, setPlaylists] = useState([]);
@@ -12,6 +13,8 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, s
     const [newName, setNewName] = useState("");
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const { user, authChecked } = useContext(AuthContext);
+
+    const pp = useContext(ApiContext)
 
     useEffect(() => {
         if (!authChecked) return;
@@ -26,13 +29,8 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, s
             setIsAuthenticated(true);
         } catch {
             setIsAuthenticated(false);
-        } finally {
-            setAuthChecked(true); // 🔑 THIS IS THE KEY
         }
     };
-
-
-    const pp = useContext(ApiContext)
 
     useEffect(() => {
         checkAuth();
@@ -214,7 +212,7 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, s
                                                     setRenamePlaylistId(playlist._id);
                                                     setNewName(playlist.name);
                                                 }}
-                                                className="p-2 bg-[#2E8B57] rounded-md hover:bg-[#3CB371] transition"
+                                                className="p-2 bg-green-400 rounded-md hover:bg-green-600 transition"
                                             >
                                                 <MdDriveFileRenameOutline size={20} />
                                             </button>
@@ -224,7 +222,7 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, s
                                                     e.stopPropagation();
                                                     deletePlaylist(playlist._id);
                                                 }}
-                                                className="p-2 bg-[#8B2E2E] rounded-md hover:bg-red-600 transition"
+                                                className="p-2 bg-red-400 rounded-md hover:bg-red-600 transition"
                                             >
                                                 <MdDelete size={20} />
                                             </button>
@@ -291,4 +289,4 @@ const PlaylistLists = ({ refreshTrigger, currentIndex, setCurrentIndex, songs, s
 
 };
 
-export default PlaylistLists;
+export default PlaylistLists;   

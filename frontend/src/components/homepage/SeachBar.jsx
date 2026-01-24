@@ -66,13 +66,13 @@ const SearchBar = ({ onSongSelect, currentIndex, songs = [], isFilterGenreToggle
                 className="h-[67%] w-[80%] rounded-full bg-[#393939] text-white font-bold focus:outline-none px-4 placeholder-gray-400"
             />
             <div onClick={GenreToggle} className=" rounded-full bg-[#393939] flex justify-center items-center">
-                {isFilterSelected ? <IoFilterCircle size={40} className="text-orange-500" /> : <IoFilterCircle size={40} className="text-white" />}
+                {isFilterSelected ? <IoFilterCircle size={40} className="text-green-400" /> : <IoFilterCircle size={40} className="text-white" />}
             </div>
 
             {results.length > 0 && (
                 <div
                     className="
-            absolute top-[10vh] left-[2.5%] 
+            absolute top-[10vh] left-[2.5%] z-30
             bg-[#373737] w-[95%] p-3 
             rounded-md text-white 
             max-h-[200px] overflow-y-auto 

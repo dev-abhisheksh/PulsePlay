@@ -59,9 +59,9 @@ const songSchema = mongoose.Schema({
 
             // 🎌 Anime / Japanese
             "Anime",
+            "Anime OST",
             "J-Pop",
             "J-Rock",
-            "Anime OST",
             "Vocaloid",
             "City Pop",
 
